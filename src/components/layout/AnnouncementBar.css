@@ -1,0 +1,76 @@
+.announcement-bar {
+  width: 100%;
+  /* background: linear-gradient(90deg, #111111, #2b1b0f, #111111); */
+  font-family: -apple-system, Segoe UI, Roboto, Arial, sans-serif;
+
+
+
+  color: #ffffff;
+  background-color: #0a244a;
+  padding: 10px 16px;
+  text-align: center;
+  position: relative;
+  z-index: 1000;
+  overflow: hidden;
+}
+
+.announcement-content {
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.announcement-text {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+  animation: slideAnnouncement 0.5s ease;
+}
+
+.announcement-badge {
+  display: inline-block;
+  margin-right: 10px;
+  padding: 3px 9px;
+  border-radius: 999px;
+  background-color: #d4af37;
+  color: #111111;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+
+@keyframes slideAnnouncement {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 600px) {
+  .announcement-bar {
+    padding: 8px 12px;
+  }
+
+  .announcement-content {
+    height: 38px;
+  }
+
+  .announcement-text {
+    font-size: 16px;
+  }
+
+  .announcement-badge {
+    margin-right: 6px;
+    padding: 2px 7px;
+    font-size: 16px;
+  }
+}

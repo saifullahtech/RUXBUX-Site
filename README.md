@@ -1,36 +1,103 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# RUXBUX Frontend
+
+RUXBUX is a Next.js storefront frontend for the RUXBUX ecommerce brand. The app uses the Next.js App Router, React, and Tailwind CSS, with shared layout components for the announcement bar and navigation.
+
+## Tech Stack
+
+- Next.js 16
+- React 19
+- Tailwind CSS 4
+- ESLint 9
+- pnpm
 
 ## Getting Started
 
-First, run the development server:
+Install dependencies:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Run the local development server:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```bash
+pnpm dev
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-## Learn More
+## Available Scripts
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+pnpm dev
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Starts the Next.js development server.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+```bash
+pnpm build
+```
 
-## Deploy on Vercel
+Creates a production build.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+```bash
+pnpm start
+```
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Runs the production server after a successful build.
+
+```bash
+pnpm lint
+```
+
+Runs ESLint for the project.
+
+## Project Structure
+
+```text
+src/
+  app/
+    layout.js
+    page.js
+    globals.css
+    about/page.js
+    contact/page.js
+    privacy-policy/page.js
+    products/stacksmart-organizer/page.js
+    refund-policy/page.js
+    reviews/page.js
+    shipping-info/page.js
+    terms-and-conditions/page.js
+  components/
+    layout/
+      AnnouncementBar.jsx
+      AnnouncementBar.css
+      Navbar.jsx
+```
+
+## Routes
+
+- `/` - Home page
+- `/products/stacksmart-organizer` - StackSmart Organizer product page
+- `/about` - About page
+- `/reviews` - Reviews page
+- `/contact` - Contact page
+- `/shipping-info` - Shipping information
+- `/refund-policy` - Refund policy
+- `/privacy-policy` - Privacy policy
+- `/terms-and-conditions` - Terms and conditions
+
+## Layout
+
+The root layout in `src/app/layout.js` renders:
+
+- `AnnouncementBar` for rotating promotional messages
+- `Navbar` for desktop and mobile navigation
+- The current page content through the App Router `children`
+
+## Development Notes
+
+- Global styles live in `src/app/globals.css`.
+- App metadata is defined in `src/app/layout.js`.
+- The project currently allows a local dev origin in `next.config.mjs`.
+- Keep new pages inside `src/app` so they are routed automatically by Next.js.
