@@ -1,6 +1,24 @@
 @import "tailwindcss";
 
+:root {
+  --font-sogo: "Segoe UI", "Sogo", Arial, sans-serif;
+}
+
+html {
+  font-family: var(--font-sogo);
+  overflow-x: hidden;
+}
+
 body {
   margin: 0;
   padding: 0;
+  font-family: var(--font-sogo);
+  overflow-x: hidden;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
 }

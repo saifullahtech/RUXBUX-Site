@@ -2,9 +2,17 @@
 const nextConfig = {
   /* config options here */
 
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "i.pravatar.cc",
+      },
+    ],
+  },
 
   allowedDevOrigins:[
-    "192.168.1.7",
+    "192.168.10.236",
   ]
 };
 
