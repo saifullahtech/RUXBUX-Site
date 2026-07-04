@@ -88,7 +88,7 @@ export default function Navbar() {
   }
 
   return (
-    <header className="sticky top-0 z-50 border-b border-[#eee3cf] bg-[#fbf5e8] shadow-[0_10px_28px_rgba(12,32,61,0.08)]">
+    <header className="relative z-50 border-b border-[#eee3cf] bg-[#fbf5e8] shadow-[0_10px_28px_rgba(12,32,61,0.08)]">
       <nav className="relative mx-auto flex min-h-[84px] max-w-[1800px] items-center justify-between gap-3 px-5 sm:px-6 lg:min-h-24 lg:gap-5 lg:px-14">
         <button
           type="button"

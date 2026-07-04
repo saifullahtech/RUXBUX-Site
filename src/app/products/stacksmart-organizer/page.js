@@ -1,4 +1,8 @@
 import ProductHeroSection from "@/components/product/ProductHeroSection";
+import BeforeAfterSection from "@/components/home/BeforeAfterSection";
+import { HowStackSmartWorksSection } from "@/components/home/StackSmartInfoSections";
+import ProductVideosSection from "@/components/product/ProductVideosSection";
+import ProductSpecialSection from "@/components/product/ProductSpecialSection";
 import ReviewsSection from "@/components/reviews/ReviewsSection";
 
 const product = {
@@ -11,6 +15,10 @@ export default function StackSmartOrganizer() {
   return (
     <main className="bg-[#fffdf8]">
       <ProductHeroSection />
+      <BeforeAfterSection />
+      <HowStackSmartWorksSection />
+      <ProductVideosSection />
+      <ProductSpecialSection />
 
       <ReviewsSection
         variant="product"

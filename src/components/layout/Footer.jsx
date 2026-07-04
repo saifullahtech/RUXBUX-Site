@@ -1,4 +1,4 @@
-import Image from "next/image";
+﻿import Image from "next/image";
 import Link from "next/link";
 
 const quickLinks = [
@@ -19,12 +19,16 @@ const serviceLinks = [
 const contactLinks = [
   {
     label: "Order on WhatsApp",
-    href: "https://wa.me/923001234567",
+    href: "https://wa.me/923020441525",
     icon: WhatsAppIcon,
   },
-  { label: "+92 300 1234567", href: "tel:+923001234567", icon: PhoneIcon },
-  { label: "hello@ruxbux.com", href: "mailto:hello@ruxbux.com", icon: MailIcon },
-  { label: "Lahore, Pakistan", href: "/contact", icon: LocationIcon },
+  { label: "+92 302 044 1525", href: "tel:+923020441525", icon: PhoneIcon },
+  { label: "ruxbuxofficial@gmail.com", href: "mailto:ruxbuxofficial@gmail.com", icon: MailIcon },
+  {
+    label: "DHA Phase 8, Lahore",
+    href: "https://maps.google.com/?q=House 115 Street 1 G Block DHA Phase 8 Lahore Pakistan",
+    icon: LocationIcon,
+  },
 ];
 
 const socialLinks = [
@@ -164,7 +168,12 @@ export default function Footer() {
           <ul className="mt-3 grid gap-2 min-[420px]:grid-cols-2 sm:mt-5 sm:block sm:space-y-4">
             {contactLinks.map(({ label, href, icon: Icon }) => (
               <li key={label}>
-                <Link href={href} className="flex items-center gap-2 text-xs font-bold text-[#f7ead4] transition hover:text-[#d98200] sm:gap-4 sm:text-sm">
+                <Link
+                  href={href}
+                  className="flex items-center gap-2 text-xs font-bold text-[#f7ead4] transition hover:text-[#d98200] sm:gap-4 sm:text-sm"
+                  target={href.startsWith("http") ? "_blank" : undefined}
+                  rel={href.startsWith("http") ? "noreferrer" : undefined}
+                >
                   <span className="shrink-0 text-[#d98200]">
                     <Icon />
                   </span>

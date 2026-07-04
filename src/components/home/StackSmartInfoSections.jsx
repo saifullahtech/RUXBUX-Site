@@ -118,6 +118,47 @@ function ArrowIcon() {
   );
 }
 
+export function HowStackSmartWorksSection() {
+  return (
+    <section className="bg-[#faf7f1] px-4 py-6 sm:px-6 sm:py-7 lg:px-8">
+      <div className="mx-auto max-w-[980px]">
+        <h2 className="text-center text-[22px] font-extrabold leading-tight text-[#08264a] sm:text-[28px]">
+          How <span className="text-[#d8952f]">StackSmart Organizer</span> Works
+        </h2>
+
+        <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center lg:gap-4">
+          {steps.map(({ number, title, description, icon: Icon }, index) => (
+            <div key={title} className="contents">
+              <article className="relative flex min-w-0 items-center gap-4 rounded-xl bg-white/80 px-4 py-3 sm:px-5 lg:bg-transparent lg:px-0 lg:py-0">
+                <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#08264a] text-[11px] font-extrabold text-white shadow-[0_10px_22px_rgba(8,38,74,0.18)]">
+                  {number}
+                </span>
+                <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#f5f0ea] text-[#b9812e] sm:h-16 sm:w-16">
+                  <Icon className="h-7 w-7 sm:h-8 sm:w-8" />
+                </span>
+                <div className="min-w-0">
+                  <h3 className="text-[14px] font-extrabold leading-tight text-[#08264a] sm:text-[15px]">
+                    {title}
+                  </h3>
+                  <p className="mt-1.5 text-[12px] font-semibold leading-[1.35] text-[#26364a] sm:text-[13px]">
+                    {description}
+                  </p>
+                </div>
+              </article>
+
+              {index < steps.length - 1 ? (
+                <div className="hidden justify-center lg:flex">
+                  <ArrowIcon />
+                </div>
+              ) : null}
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
 export default function StackSmartInfoSections() {
   return (
     <section className="bg-white">
@@ -149,42 +190,7 @@ export default function StackSmartInfoSections() {
         </div>
       </div>
 
-      <div className="bg-[#faf7f1] px-4 py-6 sm:px-6 sm:py-7 lg:px-8">
-        <div className="mx-auto max-w-[980px]">
-          <h2 className="text-center text-[22px] font-extrabold leading-tight text-[#08264a] sm:text-[28px]">
-            How <span className="text-[#d8952f]">StackSmart Organizer</span> Works
-          </h2>
-
-          <div className="mt-6 grid gap-4 lg:grid-cols-[1fr_auto_1fr_auto_1fr] lg:items-center lg:gap-4">
-            {steps.map(({ number, title, description, icon: Icon }, index) => (
-              <div key={title} className="contents">
-                <article className="relative flex min-w-0 items-center gap-4 rounded-xl bg-white/80 px-4 py-3 sm:px-5 lg:bg-transparent lg:px-0 lg:py-0">
-                  <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-[#08264a] text-[11px] font-extrabold text-white shadow-[0_10px_22px_rgba(8,38,74,0.18)]">
-                    {number}
-                  </span>
-                  <span className="flex h-14 w-14 shrink-0 items-center justify-center rounded-full bg-[#f5f0ea] text-[#b9812e] sm:h-16 sm:w-16">
-                    <Icon className="h-7 w-7 sm:h-8 sm:w-8" />
-                  </span>
-                  <div className="min-w-0">
-                    <h3 className="text-[14px] font-extrabold leading-tight text-[#08264a] sm:text-[15px]">
-                      {title}
-                    </h3>
-                    <p className="mt-1.5 text-[12px] font-semibold leading-[1.35] text-[#26364a] sm:text-[13px]">
-                      {description}
-                    </p>
-                  </div>
-                </article>
-
-                {index < steps.length - 1 ? (
-                  <div className="hidden justify-center lg:flex">
-                    <ArrowIcon />
-                  </div>
-                ) : null}
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
+      <HowStackSmartWorksSection />
     </section>
   );
 }

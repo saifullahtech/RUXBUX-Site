@@ -5,28 +5,40 @@ import { useState } from "react";
 
 const productImages = [
   {
-    src: "/hero/stacksmart-organizer.jpg",
-    alt: "StackSmart wardrobe organizer in closet",
+    src: "/product-images/1.jpeg",
+    alt: "Before and after wardrobe organization with RUX BUX modular organizers",
   },
   {
-    src: "/hero/stacksmart-organizer.PNG",
-    alt: "StackSmart organizer used for folded clothes",
+    src: "/product-images/2.jpeg",
+    alt: "StackSmart modular wardrobe organizers in a closet",
   },
   {
-    src: "/before-after/after.png",
-    alt: "Organized wardrobe after using StackSmart",
+    src: "/product-images/3.jpeg",
+    alt: "StackSmart organizer before and after comparison",
   },
   {
-    src: "/before-after/before.png",
-    alt: "Wardrobe before using StackSmart organizer",
+    src: "/product-images/4.jpeg",
+    alt: "Folded StackSmart wardrobe organizer",
   },
   {
-    src: "/hero/stacksmart-organizer.jpg",
-    alt: "Close up of StackSmart material and frame",
+    src: "/product-images/5.jpeg",
+    alt: "Hands stacking StackSmart wardrobe organizer trays",
   },
   {
-    src: "/hero/stacksmart-organizer.PNG",
-    alt: "Folded StackSmart organizer capacity view",
+    src: "/product-images/6.jpeg",
+    alt: "StackSmart organizer product stack on dark background",
+  },
+  {
+    src: "/product-images/7.jpeg",
+    alt: "StackSmart organizer detail view",
+  },
+  {
+    src: "/product-images/8.jpeg",
+    alt: "StackSmart organizer packed for wardrobe storage",
+  },
+  {
+    src: "/product-images/9.jpeg",
+    alt: "StackSmart organizer lifestyle view",
   },
 ];
 
@@ -34,7 +46,7 @@ const pricingTiers = [
   {
     qty: 6,
     subtitle: "Starter Pack",
-    subtotal: 1400,
+    subtotal: 1650,
     discount: "0%",
     discountAmount: 0,
     shipping: 250,
@@ -44,10 +56,10 @@ const pricingTiers = [
   {
     qty: 12,
     subtitle: "Most Popular",
-    badge: "Most Popular",
-    subtotal: 2800,
+    badge: "Popular",
+    subtotal: 3080,
     discount: "10%",
-    discountAmount: 280,
+    discountAmount: 310,
     shipping: 250,
     total: 2770,
     perPack: 1385,
@@ -75,38 +87,37 @@ const pricingTiers = [
   },
   {
     qty: 30,
-    subtitle: "Large Wardrobe Pack",
+    subtitle: "Bulk Pack",
     subtotal: 7000,
-    discount: "21.25%",
-    discountAmount: 1488,
+    discount: "22%",
+    discountAmount: 1540,
     shipping: 0,
-    total: 5513,
-    perPack: 1103,
+    total: 5460,
+    perPack: 1092,
   },
   {
     qty: 36,
-    subtitle: "Home Reset Pack",
+    subtitle: "Bulk Pack",
     subtotal: 8400,
-    discount: "22.5%",
-    discountAmount: 1890,
+    discount: "23%",
+    discountAmount: 1932,
     shipping: 0,
-    total: 6510,
-    perPack: 1085,
+    total: 6468,
+    perPack: 1078,
   },
   {
     qty: 42,
-    subtitle: "Extended Storage Pack",
+    subtitle: "Bulk Pack",
     subtotal: 9800,
-    discount: "23.75%",
-    discountAmount: 2328,
+    discount: "24%",
+    discountAmount: 2352,
     shipping: 0,
-    total: 7473,
-    perPack: 1068,
+    total: 7448,
+    perPack: 1064,
   },
   {
     qty: 48,
-    subtitle: "Maximum Saving",
-    badge: "Maximum Saving",
+    subtitle: "Max Bulk Pack",
     subtotal: 11200,
     discount: "25%",
     discountAmount: 2800,
@@ -116,60 +127,31 @@ const pricingTiers = [
   },
 ];
 
-const featuredQuantities = [6, 12, 24, 48];
-const extraQuantities = [18, 30, 36, 42];
+const featuredQuantities = [6, 12, 18, 24];
 const whatsappNumber = "923000000000";
 
 const benefits = [
-  "Stackable design saves wardrobe space",
-  "Keeps clothes neat, visible, and accessible",
-  "Strong frame for daily wardrobe use",
+  {
+    title: "Stackable design saves wardrobe space",
+    icon: "layers",
+  },
+  {
+    title: "Keeps clothes neat, visible and accessible",
+    icon: "box",
+  },
+  {
+    title: "Strong frame for daily wardrobe use",
+    icon: "shield",
+  },
 ];
 
-const trustBadges = [
-  "Cash on Delivery",
-  "Fast Delivery",
-  "Easy Exchange",
-  "WhatsApp Support",
-];
-
-const accordions = [
-  {
-    title: "What is included in the pack?",
-    content:
-      "You will receive the selected quantity of StackSmart Wardrobe Organizers. Each organizer is designed for folded clothes, seasonal items, and wardrobe storage.",
-  },
-  {
-    title: "Delivery & returns",
-    content:
-      "Cash on Delivery is available. Delivery usually takes 3-5 working days. Exchange support is available if the product has a genuine issue.",
-  },
-  {
-    title: "Why customers choose StackSmart?",
-    content:
-      "StackSmart helps keep wardrobes clean, visible, and organized while saving shelf space through its stackable design.",
-  },
-];
+const productRating = {
+  score: "4.9",
+  reviews: "1,248",
+};
 
 function formatPKR(value) {
   return `Rs.${Number(value).toLocaleString("en-PK")}`;
-}
-
-function CheckIcon({ className = "h-4 w-4" }) {
-  return (
-    <svg
-      aria-hidden="true"
-      className={className}
-      viewBox="0 0 24 24"
-      fill="none"
-      stroke="currentColor"
-      strokeLinecap="round"
-      strokeLinejoin="round"
-      strokeWidth="2.8"
-    >
-      <path d="m5 12 4 4L19 6" />
-    </svg>
-  );
 }
 
 function ChevronIcon({ className = "h-4 w-4" }) {
@@ -193,12 +175,12 @@ function MinusIcon() {
   return (
     <svg
       aria-hidden="true"
-      className="h-4 w-4"
+      className="h-5 w-5"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
-      strokeWidth="2.6"
+      strokeWidth="2.5"
     >
       <path d="M5 12h14" />
     </svg>
@@ -209,12 +191,12 @@ function PlusIcon() {
   return (
     <svg
       aria-hidden="true"
-      className="h-4 w-4"
+      className="h-5 w-5"
       viewBox="0 0 24 24"
       fill="none"
       stroke="currentColor"
       strokeLinecap="round"
-      strokeWidth="2.6"
+      strokeWidth="2.5"
     >
       <path d="M12 5v14" />
       <path d="M5 12h14" />
@@ -222,88 +204,158 @@ function PlusIcon() {
   );
 }
 
-function WhatsAppIcon() {
+function BagIcon() {
   return (
-    <svg aria-hidden="true" className="h-5 w-5" viewBox="0 0 32 32" fill="currentColor">
-      <path d="M16.02 3.2A12.72 12.72 0 0 0 5.04 22.35L3.5 28.8l6.61-1.49A12.72 12.72 0 1 0 16.02 3.2Zm0 22.98a10.22 10.22 0 0 1-5.2-1.43l-.38-.22-3.91.88.92-3.82-.25-.39a10.23 10.23 0 1 1 8.82 4.98Zm5.92-7.66c-.32-.16-1.9-.94-2.2-1.04-.3-.11-.52-.16-.74.16-.22.32-.85 1.04-1.04 1.26-.19.21-.38.24-.7.08-.32-.16-1.35-.5-2.58-1.59-.95-.85-1.6-1.9-1.78-2.22-.19-.32-.02-.5.14-.66.15-.14.32-.38.48-.57.16-.19.22-.32.32-.54.11-.22.05-.41-.03-.57-.08-.16-.74-1.78-1.01-2.44-.27-.64-.54-.55-.74-.56h-.63c-.22 0-.57.08-.87.41-.3.32-1.14 1.11-1.14 2.72 0 1.6 1.17 3.15 1.33 3.37.16.22 2.3 3.51 5.56 4.92.78.34 1.38.54 1.85.69.78.25 1.49.21 2.05.13.63-.09 1.9-.78 2.17-1.53.27-.75.27-1.39.19-1.53-.08-.13-.3-.21-.62-.37Z" />
+    <svg
+      aria-hidden="true"
+      className="h-5 w-5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+    >
+      <path d="M6 8h12l-1 12H7L6 8Z" />
+      <path d="M9 8a3 3 0 0 1 6 0" />
     </svg>
   );
 }
 
-function BundleCard({ tier, selected, compact = false, onSelect }) {
-  const hasSavings = tier.discount !== "0%";
+function StarIcon() {
+  return (
+    <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+      <path d="m12 2.8 2.83 5.74 6.34.92-4.59 4.47 1.08 6.31L12 17.27l-5.66 2.97 1.08-6.31-4.59-4.47 6.34-.92L12 2.8Z" />
+    </svg>
+  );
+}
+
+function BenefitIcon({ type }) {
+  if (type === "layers") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="h-[18px] w-[18px]"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      >
+        <path d="m12 3 8 4-8 4-8-4 8-4Z" />
+        <path d="m4 12 8 4 8-4" />
+        <path d="m4 17 8 4 8-4" />
+      </svg>
+    );
+  }
+
+  if (type === "shield") {
+    return (
+      <svg
+        aria-hidden="true"
+        className="h-[18px] w-[18px]"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth="2"
+      >
+        <path d="M12 3 19 6v5c0 4.6-2.8 8.3-7 10-4.2-1.7-7-5.4-7-10V6l7-3Z" />
+        <path d="m9.5 12 1.7 1.7 3.3-3.4" />
+      </svg>
+    );
+  }
+
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-[18px] w-[18px]"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2"
+    >
+      <path d="M6 6.5 12 3l6 3.5v7L12 17l-6-3.5v-7Z" />
+      <path d="m6 6.5 6 3.5 6-3.5" />
+      <path d="M12 10v7" />
+      <path d="M8 19h8" />
+      <path d="M10 21h4" />
+    </svg>
+  );
+}
+
+function BundleCard({ tier, selected, onSelect }) {
   const isFreeShipping = tier.shipping === 0;
+  const topLabel = tier.badge || tier.subtitle;
 
   return (
     <button
       type="button"
       onClick={() => onSelect(tier.qty)}
       className={[
-        "relative rounded-2xl border bg-white text-left transition duration-200",
-        "hover:-translate-y-0.5 hover:border-[#d8952f] hover:shadow-[0_14px_28px_rgba(8,38,74,0.08)]",
+        "relative flex min-h-[126px] flex-col items-center rounded-lg border bg-white px-2.5 pb-3 pt-4 text-center transition duration-200",
+        "hover:-translate-y-0.5 hover:border-[#d8952f] hover:shadow-[0_14px_26px_rgba(8,38,74,0.08)]",
         selected
-          ? "border-[#08264a] shadow-[0_14px_34px_rgba(8,38,74,0.12)] ring-2 ring-[#d8952f]/25"
-          : "border-[#e7ddca]",
-        compact ? "p-3" : "p-4",
+          ? "border-[#d8952f] shadow-[0_12px_28px_rgba(216,149,47,0.16)]"
+          : "border-[#eee3cf]",
       ].join(" ")}
     >
-      {tier.badge ? (
-        <span className="mb-3 inline-flex rounded-full bg-[#f5ead2] px-2.5 py-1 text-[11px] font-extrabold uppercase tracking-[0.04em] text-[#8a5a12]">
-          {tier.badge}
+      <span
+        className={[
+          "absolute -top-3 left-1/2 max-w-[86%] -translate-x-1/2 whitespace-nowrap rounded-full px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.08em]",
+          selected ? "bg-[#d8952f] text-white" : "bg-[#eee3cf] text-[#08264a]",
+        ].join(" ")}
+      >
+        {topLabel}
+      </span>
+
+      <span className="text-xl font-black leading-none text-[#08264a]">
+        {formatPKR(tier.total)}
+      </span>
+      <span className="mt-1.5 text-xs font-medium leading-none text-[#6b7280]">
+        Qty {tier.qty}
+      </span>
+
+      <span className="mt-2 flex min-h-5 items-center justify-center">
+        <span
+          className={[
+            "rounded-full px-2.5 py-0.5 text-[11px] font-semibold",
+            selected ? "bg-[#fff4df] text-[#9a5b08]" : "bg-[#eee3cf] text-[#6b7280]",
+          ].join(" ")}
+        >
+          Save {tier.discount}
         </span>
-      ) : null}
+      </span>
 
-      <div className="flex items-start justify-between gap-3">
-        <div>
-          <p className="text-lg font-extrabold leading-none text-[#08264a]">Qty {tier.qty}</p>
-          <p className="mt-1 text-xs font-bold text-[#667085]">{tier.subtitle}</p>
-        </div>
-        {selected ? (
-          <span className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-[#08264a] text-white">
-            <CheckIcon className="h-3.5 w-3.5" />
-          </span>
-        ) : null}
-      </div>
-
-      <div className="mt-4 space-y-1">
-        <p className="text-sm font-extrabold text-[#08264a]">{formatPKR(tier.total)} total</p>
-        <p className="text-xs font-semibold text-[#667085]">
-          {formatPKR(tier.perPack)} per 6-pack
-        </p>
-      </div>
-
-      <div className="mt-3 flex flex-wrap gap-1.5">
-        {hasSavings ? (
-          <span className="rounded-full bg-[#fff6e2] px-2 py-1 text-[11px] font-extrabold text-[#9a6516]">
-            Save {tier.discount}
-          </span>
-        ) : null}
+      <span className="mt-1.5 text-[11px] font-semibold">
         {isFreeShipping ? (
-          <span className="rounded-full bg-[#e9f8ef] px-2 py-1 text-[11px] font-extrabold text-[#16773c]">
-            Free Shipping
-          </span>
-        ) : null}
-      </div>
+          <span className="text-[#37ad4b]">Free Shipping</span>
+        ) : (
+          <span className="text-[#6b7280]">+{formatPKR(tier.shipping)} shipping</span>
+        )}
+      </span>
+
+      <span className="mt-2 whitespace-nowrap text-[10px] font-normal leading-none text-[#6b7280]">
+        {formatPKR(tier.perPack)} per 6-pack
+      </span>
     </button>
   );
 }
 
 export default function ProductHeroSection() {
   const [activeImage, setActiveImage] = useState(0);
-  const [selectedQty, setSelectedQty] = useState(24);
-  const [showExtraPacks, setShowExtraPacks] = useState(false);
-  const [openAccordion, setOpenAccordion] = useState(null);
+  const [selectedQty, setSelectedQty] = useState(12);
 
-  function getSelectedTier() {
-    return pricingTiers.find((tier) => tier.qty === selectedQty) || pricingTiers[0];
-  }
-
-  const selectedTier = getSelectedTier();
+  const selectedTier =
+    pricingTiers.find((tier) => tier.qty === selectedQty) || pricingTiers[0];
   const selectedIndex = pricingTiers.findIndex((tier) => tier.qty === selectedQty);
   const featuredTiers = featuredQuantities.map((qty) =>
     pricingTiers.find((tier) => tier.qty === qty)
   );
-  const extraTiers = extraQuantities.map((qty) => pricingTiers.find((tier) => tier.qty === qty));
 
   function handleNextImage() {
     setActiveImage((current) => (current + 1) % productImages.length);
@@ -325,10 +377,17 @@ export default function ProductHeroSection() {
     }
   }
 
+  const requiresAdvance = selectedTier.qty > 24;
+  const advanceAmount = Math.round(selectedTier.total * 0.2);
+
   function handleWhatsAppOrder() {
     const message = `Hello RUXBUX, I want to order StackSmart Wardrobe Organizer.
 Selected Quantity: ${selectedTier.qty}
-Total: ${formatPKR(selectedTier.total)} PKR
+Total: ${formatPKR(selectedTier.total)} PKR${
+      requiresAdvance
+        ? `\n20% Advance Payment Required: ${formatPKR(advanceAmount)} PKR`
+        : ""
+    }
 Please confirm availability and delivery details.`;
 
     window.open(
@@ -338,48 +397,39 @@ Please confirm availability and delivery details.`;
     );
   }
 
-  const savingsLine =
-    selectedTier.shipping === 0
-      ? `You save ${formatPKR(selectedTier.discountAmount)} - Free Shipping`
-      : selectedTier.discountAmount > 0
-        ? `You save ${formatPKR(selectedTier.discountAmount)} - Includes Rs.250 delivery charges`
-        : "Includes Rs.250 delivery charges";
-
-  const currentOffer =
-    selectedTier.discountAmount > 0
-      ? `Save ${selectedTier.discount}${selectedTier.shipping === 0 ? " + Free Shipping" : ""}`
-      : selectedTier.shipping === 0
-        ? "Free Shipping"
-        : "Starter Pack";
+  const hasDiscount = selectedTier.discountAmount > 0;
+  const savingsLine = hasDiscount
+    ? `You save ${formatPKR(selectedTier.discountAmount)}`
+    : "Standard pricing";
 
   return (
-    <section className="bg-[#fffdf8] px-4 pb-28 pt-6 sm:px-6 lg:px-8 lg:pb-14 lg:pt-10">
-      <div className="mx-auto grid max-w-7xl gap-7 lg:grid-cols-[1.12fr_0.88fr] lg:items-start">
-        <div className="space-y-4">
-          <div className="overflow-hidden rounded-[24px] border border-[#eadfca] bg-white shadow-[0_24px_60px_rgba(8,38,74,0.08)]">
+    <section className="bg-white px-4 pb-8 pt-4 sm:px-6 lg:px-8 lg:pb-12 lg:pt-5">
+      <div className="mx-auto grid max-w-[1160px] gap-6 lg:grid-cols-[390px_minmax(0,1fr)] xl:grid-cols-[410px_minmax(0,1fr)] xl:gap-8">
+        <div className="min-w-0">
+          <div className="mx-auto max-w-[405px] overflow-hidden rounded-[18px] border-[5px] border-[#08264a] bg-[#f6eddd] shadow-[0_18px_42px_rgba(8,38,74,0.08)] sm:rounded-[20px] lg:max-w-[385px] xl:max-w-[405px]">
             <div className="relative aspect-square">
               <Image
                 src={productImages[activeImage].src}
                 alt={productImages[activeImage].alt}
                 fill
                 priority
-                sizes="(min-width: 1024px) 54vw, 100vw"
+                sizes="(min-width: 1280px) 405px, (min-width: 1024px) 385px, 100vw"
                 className="object-cover"
               />
             </div>
           </div>
 
-          <div className="flex items-center gap-3">
+          <div className="mx-auto mt-3 flex max-w-[405px] items-center gap-2.5 sm:gap-3 lg:max-w-[385px] xl:max-w-[405px]">
             <button
               type="button"
               onClick={handlePrevImage}
               aria-label="Previous product image"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e4d8c2] bg-white text-[#08264a] shadow-sm transition hover:border-[#d8952f] hover:text-[#d8952f]"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#eee3cf] bg-white text-[#08264a] shadow-sm transition hover:border-[#d8952f] hover:text-[#d8952f]"
             >
               <ChevronIcon className="h-4 w-4 rotate-180" />
             </button>
 
-            <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto pb-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div className="flex min-w-0 flex-1 gap-2 overflow-x-auto px-1 py-1 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
               {productImages.map((image, index) => (
                 <button
                   type="button"
@@ -387,19 +437,13 @@ Please confirm availability and delivery details.`;
                   onClick={() => setActiveImage(index)}
                   aria-label={`View product image ${index + 1}`}
                   className={[
-                    "relative h-16 w-16 shrink-0 overflow-hidden rounded-xl border bg-white transition sm:h-20 sm:w-20",
+                    "relative h-[54px] w-[54px] shrink-0 overflow-hidden rounded-lg border-2 bg-white transition sm:h-[62px] sm:w-[62px]",
                     activeImage === index
-                      ? "border-[#08264a] ring-2 ring-[#d8952f]/35"
-                      : "border-[#e4d8c2] hover:border-[#d8952f]",
+                      ? "border-[#d8952f] shadow-[0_8px_16px_rgba(216,149,47,0.18)]"
+                      : "border-[#eee3cf] hover:border-[#d8952f]",
                   ].join(" ")}
                 >
-                  <Image
-                    src={image.src}
-                    alt={image.alt}
-                    fill
-                    sizes="80px"
-                    className="object-cover"
-                  />
+                  <Image src={image.src} alt={image.alt} fill sizes="62px" className="object-cover" />
                 </button>
               ))}
             </div>
@@ -408,118 +452,84 @@ Please confirm availability and delivery details.`;
               type="button"
               onClick={handleNextImage}
               aria-label="Next product image"
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full border border-[#e4d8c2] bg-white text-[#08264a] shadow-sm transition hover:border-[#d8952f] hover:text-[#d8952f]"
+              className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-[#eee3cf] bg-white text-[#08264a] shadow-sm transition hover:border-[#d8952f] hover:text-[#d8952f]"
             >
               <ChevronIcon className="h-4 w-4" />
             </button>
           </div>
         </div>
 
-        <div className="rounded-[24px] border border-[#eadfca] bg-white p-5 shadow-[0_24px_70px_rgba(8,38,74,0.09)] sm:p-6 lg:sticky lg:top-28">
+        <div className="min-w-0">
           <div>
-            <h1 className="text-3xl font-extrabold leading-tight text-[#08264a] sm:text-4xl">
-              StackSmart Wardrobe Organizer
+            <h1 className="text-[30px] font-black leading-[1.14] sm:text-[36px] lg:whitespace-nowrap lg:text-[32px] xl:text-[36px]">
+              <span className="text-[#08264a]">StackSmart</span>{" "}
+              <span className="text-[#d8952f]">Wardrobe Organizer</span>
             </h1>
-            <p className="mt-3 text-base font-semibold leading-7 text-[#3f4754]">
-              Heavy-duty stackable storage solution for clean, neat wardrobes.
-            </p>
-            <p className="mt-3 inline-flex rounded-full bg-[#fff6e2] px-3 py-1.5 text-xs font-extrabold uppercase tracking-[0.05em] text-[#8a5a12]">
-              Trusted by 22,000+ RUXBUX customers
-            </p>
-          </div>
-
-          <div className="mt-6 rounded-2xl border border-[#eadfca] bg-[#fffaf0] p-4">
-            <div className="flex flex-wrap items-end justify-between gap-3">
-              <div>
-                <p className="text-sm font-bold text-[#667085]">Selected pack</p>
-                <div className="mt-1 flex items-baseline gap-3">
-                  {selectedTier.discountAmount > 0 ? (
-                    <span className="text-base font-bold text-[#8b94a3] line-through">
-                      {formatPKR(selectedTier.subtotal)}
-                    </span>
-                  ) : null}
-                  <span className="text-3xl font-extrabold text-[#08264a]">
-                    {formatPKR(selectedTier.total)} PKR
-                  </span>
-                </div>
-              </div>
-              {selectedTier.discountAmount > 0 ? (
-                <span className="rounded-full bg-[#d8952f] px-3 py-1.5 text-sm font-extrabold text-white">
-                  Save {selectedTier.discount}
-                </span>
-              ) : null}
+            <div
+              className="mt-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-[#4b5563]"
+              aria-label={`${productRating.score} out of 5 rating based on ${productRating.reviews} reviews`}
+            >
+              <span className="flex items-center gap-0.5 text-[#d8952f]">
+                {Array.from({ length: 5 }).map((_, index) => (
+                  <StarIcon key={index} />
+                ))}
+              </span>
+              <span className="font-black text-[#08264a]">{productRating.score}/5</span>
+              <span className="text-[#6b7280]">|</span>
+              <span>{productRating.reviews} reviews</span>
             </div>
-            <p className="mt-3 text-sm font-bold text-[#16773c]">{savingsLine}</p>
           </div>
 
-          <ul className="mt-5 grid gap-3">
+          <ul className="mt-3 grid gap-2.5">
             {benefits.map((benefit) => (
-              <li key={benefit} className="flex items-center gap-3 text-sm font-bold text-[#303846]">
-                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-full bg-[#f5ead2] text-[#9a6516]">
-                  <CheckIcon />
+              <li
+                key={benefit.title}
+                className="flex items-center gap-2.5 text-[12px] font-semibold leading-5 text-[#4b5563] sm:text-[13px]"
+              >
+                <span className="flex h-7 w-7 shrink-0 items-center justify-center rounded-md bg-[#fff4df] text-[#9a5b08] ring-1 ring-[#f2d5ac]">
+                  <BenefitIcon type={benefit.icon} />
                 </span>
-                <span>{benefit}</span>
+                <span>{benefit.title}</span>
               </li>
             ))}
           </ul>
 
-          <div className="mt-7">
-            <div className="flex items-end justify-between gap-4">
-              <div>
-                <h2 className="text-lg font-extrabold text-[#08264a]">Choose Your Quantity</h2>
-                <p className="mt-1 text-sm font-semibold text-[#667085]">Buy more, save more</p>
-              </div>
-            </div>
-
-            <div className="mt-4 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
-              {featuredTiers.map((tier) => (
-                <BundleCard
-                  key={tier.qty}
-                  tier={tier}
-                  selected={selectedTier.qty === tier.qty}
-                  onSelect={setSelectedQty}
-                />
-              ))}
-            </div>
-
-            {showExtraPacks ? (
-              <div className="mt-3 grid grid-cols-1 gap-3 min-[420px]:grid-cols-2">
-                {extraTiers.map((tier) => (
-                  <BundleCard
-                    key={tier.qty}
-                    tier={tier}
-                    compact
-                    selected={selectedTier.qty === tier.qty}
-                    onSelect={setSelectedQty}
-                  />
-                ))}
-              </div>
-            ) : null}
-
-            <button
-              type="button"
-              onClick={() => setShowExtraPacks((current) => !current)}
-              className="mt-4 text-sm font-extrabold text-[#08264a] underline decoration-[#d8952f] decoration-2 underline-offset-4 transition hover:text-[#d8952f]"
-            >
-              {showExtraPacks ? "Hide extra packs" : "View all packs"}
-            </button>
+          <div className="flex items-center gap-4">
+            <div className="h-px flex-1 bg-[#eee3cf]" />
+            <h2 className="shrink-0 text-sm font-normal text-[#6b7280]">
+              Buy more, Save more
+            </h2>
+            <div className="h-px flex-1 bg-[#eee3cf]" />
           </div>
 
-          <div className="mt-6 rounded-2xl border border-[#eadfca] bg-white p-4">
-            <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-              <div>
-                <p className="text-sm font-extrabold text-[#08264a]">Selected Quantity</p>
-                <div className="mt-3 inline-flex items-center rounded-full border border-[#d8cbb4] bg-[#fffdf8] p-1">
+          <div className="mt-4 grid grid-cols-2 gap-2.5 lg:grid-cols-4">
+            {featuredTiers.map((tier) => (
+              <BundleCard
+                key={tier.qty}
+                tier={tier}
+                selected={selectedTier.qty === tier.qty}
+                onSelect={setSelectedQty}
+              />
+            ))}
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-[#eee3cf] bg-white px-4 py-3 shadow-[0_16px_38px_rgba(8,38,74,0.06)] sm:px-5 sm:py-3.5 lg:px-6 lg:py-3.5">
+            <div className="grid gap-5 lg:grid-cols-[1.05fr_1.1fr_0.95fr_0.95fr] lg:gap-0">
+              <div className="text-center lg:border-r lg:border-[#eee3cf] lg:pr-6 lg:text-left">
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                  Selected Quantity
+                </p>
+                <div className="mx-auto mt-3 grid max-w-[218px] grid-cols-[1fr_1.35fr_1fr] overflow-hidden rounded-xl border border-[#eee3cf] bg-white shadow-sm lg:mx-0">
                   <button
                     type="button"
                     onClick={handlePrevQty}
                     disabled={selectedIndex === 0}
                     aria-label="Select previous quantity tier"
-                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#08264a] transition hover:bg-[#f5ead2] disabled:cursor-not-allowed disabled:text-[#b7bfca] disabled:hover:bg-transparent"
+                    className="flex h-10 items-center justify-center text-[#08264a] transition hover:bg-[#f3f6f9] disabled:cursor-not-allowed disabled:text-[#b4bdc9] sm:h-11"
                   >
                     <MinusIcon />
                   </button>
-                  <span className="min-w-14 text-center text-lg font-extrabold text-[#08264a]">
+                  <span className="flex h-10 items-center justify-center border-x border-[#eee3cf] text-xl font-semibold text-[#08264a] sm:h-11">
                     {selectedTier.qty}
                   </span>
                   <button
@@ -527,113 +537,70 @@ Please confirm availability and delivery details.`;
                     onClick={handleNextQty}
                     disabled={selectedIndex === pricingTiers.length - 1}
                     aria-label="Select next quantity tier"
-                    className="flex h-10 w-10 items-center justify-center rounded-full text-[#08264a] transition hover:bg-[#f5ead2] disabled:cursor-not-allowed disabled:text-[#b7bfca] disabled:hover:bg-transparent"
+                    className="flex h-10 items-center justify-center text-[#08264a] transition hover:bg-[#f3f6f9] disabled:cursor-not-allowed disabled:text-[#b4bdc9] sm:h-11"
                   >
                     <PlusIcon />
                   </button>
                 </div>
               </div>
 
-              <div className="rounded-2xl bg-[#fff6e2] p-4 sm:min-w-48">
-                <p className="text-xs font-extrabold uppercase tracking-[0.05em] text-[#9a6516]">
-                  Current Offer
+              <div className="border-t border-[#eee3cf] pt-4 text-center lg:border-r lg:border-t-0 lg:border-[#eee3cf] lg:px-6 lg:pt-0 lg:text-left">
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                  Order Summary
                 </p>
-                <p className="mt-1 text-sm font-extrabold text-[#08264a]">{currentOffer}</p>
-                <p className="mt-3 text-xs font-extrabold uppercase tracking-[0.05em] text-[#667085]">
-                  Total
+                <p className="mt-3 text-[15px] font-medium leading-6 text-[#4b5563]">
+                  Qty {selectedTier.qty} pack
                 </p>
-                <p className="mt-1 text-xl font-extrabold text-[#08264a]">
-                  {formatPKR(selectedTier.total)} PKR
-                </p>
+                {hasDiscount || selectedTier.shipping === 0 ? (
+                  <div className="mt-2 flex flex-wrap justify-center gap-1.5 lg:justify-start">
+                    {hasDiscount ? (
+                      <span className="rounded-full bg-[#eaf7ef] px-2.5 py-1 text-[11px] font-semibold text-[#37ad4b]">
+                        Save {selectedTier.discount}
+                      </span>
+                    ) : null}
+                    {selectedTier.shipping === 0 ? (
+                      <span className="rounded-full bg-[#eaf7ef] px-2.5 py-1 text-[11px] font-semibold text-[#37ad4b]">
+                        Free Shipping
+                      </span>
+                    ) : null}
+                  </div>
+                ) : null}
               </div>
+
+              <div className="border-t border-[#eee3cf] pt-4 text-center lg:border-t-0 lg:px-6 lg:pt-0">
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                  Total (PKR)
+                </p>
+                {hasDiscount ? (
+                  <p className="mt-3 text-sm font-medium text-[#6b7280] line-through">
+                    {formatPKR(selectedTier.subtotal)}
+                  </p>
+                ) : null}
+                <p className={`text-[28px] font-black leading-none text-[#08264a] ${hasDiscount ? "mt-1" : "mt-3"}`}>
+                  {formatPKR(selectedTier.total)}
+                </p>
+                <p
+                  className={`mt-2 text-[13px] font-semibold leading-5 ${hasDiscount ? "text-[#37ad4b]" : "text-[#6b7280]"}`}
+                >
+                  {savingsLine}
+                </p>
+                {requiresAdvance ? (
+                  <p className="mt-2 rounded-lg bg-[#fff4df] px-2.5 py-1.5 text-[11px] font-semibold leading-5 text-[#9a5b08]">
+                    20% advance ({formatPKR(advanceAmount)}) required
+                  </p>
+                ) : null}
+              </div>
+
+              <button
+                type="button"
+                onClick={handleWhatsAppOrder}
+                className="inline-flex min-h-11 w-full items-center justify-center gap-2.5 rounded-xl bg-[#08264a] px-5 text-[15px] font-semibold text-white shadow-[0_14px_28px_rgba(8,38,74,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0b315e] sm:max-w-[230px] lg:ml-auto lg:min-h-12 lg:max-w-none lg:self-center"
+              >
+                <BagIcon />
+                BUY NOW
+              </button>
             </div>
           </div>
-
-          <div className="mt-5 grid gap-3 sm:grid-cols-2">
-            <button
-              type="button"
-              onClick={handleWhatsAppOrder}
-              className="inline-flex min-h-12 items-center justify-center gap-2 rounded-xl bg-[#128c3b] px-5 text-sm font-extrabold text-white shadow-[0_14px_30px_rgba(18,140,59,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0f7b34]"
-            >
-              <WhatsAppIcon />
-              Order on WhatsApp
-            </button>
-            <button
-              type="button"
-              onClick={handleWhatsAppOrder}
-              className="inline-flex min-h-12 items-center justify-center rounded-xl border border-[#08264a] bg-white px-5 text-sm font-extrabold text-[#08264a] transition hover:-translate-y-0.5 hover:border-[#d8952f] hover:text-[#d8952f]"
-            >
-              Buy Now
-            </button>
-          </div>
-
-          <div className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
-            {trustBadges.map((badge) => (
-              <div
-                key={badge}
-                className="flex items-center justify-center gap-1.5 rounded-xl border border-[#eadfca] bg-[#fffdf8] px-2.5 py-2 text-center text-[11px] font-extrabold text-[#303846]"
-              >
-                <CheckIcon className="h-3.5 w-3.5 text-[#16773c]" />
-                <span>{badge}</span>
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-6 divide-y divide-[#eadfca] border-t border-[#eadfca]">
-            {accordions.map((item, index) => {
-              const isOpen = openAccordion === index;
-
-              return (
-                <div key={item.title}>
-                  <button
-                    type="button"
-                    onClick={() => setOpenAccordion(isOpen ? null : index)}
-                    className="flex w-full items-center justify-between gap-4 py-4 text-left text-sm font-extrabold text-[#08264a]"
-                    aria-expanded={isOpen}
-                  >
-                    <span>{item.title}</span>
-                    <ChevronIcon
-                      className={[
-                        "h-4 w-4 shrink-0 transition-transform duration-200",
-                        isOpen ? "rotate-90" : "",
-                      ].join(" ")}
-                    />
-                  </button>
-                  <div
-                    className={[
-                      "grid transition-[grid-template-rows] duration-200 ease-out",
-                      isOpen ? "grid-rows-[1fr]" : "grid-rows-[0fr]",
-                    ].join(" ")}
-                  >
-                    <div className="overflow-hidden">
-                      <p className="pb-4 text-sm font-semibold leading-6 text-[#5b6472]">
-                        {item.content}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        </div>
-      </div>
-
-      <div className="fixed inset-x-0 bottom-0 z-40 border-t border-[#d8cbb4] bg-white/95 px-4 py-3 shadow-[0_-12px_30px_rgba(8,38,74,0.12)] backdrop-blur md:hidden">
-        <div className="mx-auto flex max-w-7xl items-center gap-3">
-          <div className="min-w-0 flex-1">
-            <p className="text-xs font-bold text-[#667085]">Total</p>
-            <p className="truncate text-lg font-extrabold text-[#08264a]">
-              {formatPKR(selectedTier.total)} PKR
-            </p>
-          </div>
-          <button
-            type="button"
-            onClick={handleWhatsAppOrder}
-            className="inline-flex min-h-11 shrink-0 items-center justify-center gap-2 rounded-xl bg-[#128c3b] px-4 text-sm font-extrabold text-white shadow-[0_10px_22px_rgba(18,140,59,0.24)]"
-          >
-            <WhatsAppIcon />
-            Order on WhatsApp
-          </button>
         </div>
       </div>
     </section>
