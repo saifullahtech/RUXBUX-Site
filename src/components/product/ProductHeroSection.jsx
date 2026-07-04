@@ -1,7 +1,9 @@
 "use client";
 
 import Image from "next/image";
-import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { createOrder } from "@/lib/api/orders";
 
 const productImages = [
   {
@@ -128,6 +130,7 @@ const pricingTiers = [
 ];
 
 const featuredQuantities = [6, 12, 18, 24];
+const allowedOrderQuantities = [6, 12, 18, 24, 30, 36, 42, 48];
 const whatsappNumber = "923000000000";
 
 const benefits = [
@@ -152,6 +155,52 @@ const productRating = {
 
 function formatPKR(value) {
   return `Rs.${Number(value).toLocaleString("en-PK")}`;
+}
+
+function formatOrderError(error) {
+  if (!error) {
+    return "Unable to place order. Please try again.";
+  }
+
+  if (typeof error === "string") {
+    return error;
+  }
+
+  if (Array.isArray(error)) {
+    return error.join(" ");
+  }
+
+  if (error.detail) {
+    return Array.isArray(error.detail) ? error.detail.join(" ") : String(error.detail);
+  }
+
+  if (error instanceof Error || error.message) {
+    const message = error.message || String(error);
+
+    if (message.includes("Failed to fetch")) {
+      return "Unable to reach order API. Please try again in a moment.";
+    }
+
+    return message;
+  }
+
+  if (typeof error === "object") {
+    const fieldErrors = Object.entries(error)
+      .map(([field, value]) => {
+        const message = Array.isArray(value)
+          ? value.join(", ")
+          : typeof value === "object"
+            ? JSON.stringify(value)
+            : String(value);
+
+        return `${field}: ${message}`;
+      })
+      .join(" ");
+
+    return fieldErrors || "Unable to place order. Please check your details.";
+  }
+
+  return "Unable to place order. Please try again.";
 }
 
 function ChevronIcon({ className = "h-4 w-4" }) {
@@ -218,6 +267,24 @@ function BagIcon() {
     >
       <path d="M6 8h12l-1 12H7L6 8Z" />
       <path d="M9 8a3 3 0 0 1 6 0" />
+    </svg>
+  );
+}
+
+function CloseIcon() {
+  return (
+    <svg
+      aria-hidden="true"
+      className="h-5 w-5"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      strokeWidth="2.4"
+    >
+      <path d="M18 6 6 18" />
+      <path d="m6 6 12 12" />
     </svg>
   );
 }
@@ -347,15 +414,33 @@ function BundleCard({ tier, selected, onSelect }) {
 }
 
 export default function ProductHeroSection() {
+  const router = useRouter();
   const [activeImage, setActiveImage] = useState(0);
   const [selectedQty, setSelectedQty] = useState(12);
+  const [customerForm, setCustomerForm] = useState({
+    email: "",
+    full_name: "",
+    phone: "",
+    address: "",
+    city: "",
+  });
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [orderError, setOrderError] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
+  const [createdOrder, setCreatedOrder] = useState(null);
+  const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
 
+  const orderableTiers = pricingTiers.filter((tier) =>
+    allowedOrderQuantities.includes(tier.qty)
+  );
   const selectedTier =
-    pricingTiers.find((tier) => tier.qty === selectedQty) || pricingTiers[0];
-  const selectedIndex = pricingTiers.findIndex((tier) => tier.qty === selectedQty);
+    orderableTiers.find((tier) => tier.qty === selectedQty) || orderableTiers[0];
+  const selectedIndex = orderableTiers.findIndex((tier) => tier.qty === selectedQty);
   const featuredTiers = featuredQuantities.map((qty) =>
     pricingTiers.find((tier) => tier.qty === qty)
   );
+  const inputClass =
+    "mt-2 h-11 w-full rounded-xl border border-[#eee3cf] bg-white px-4 text-sm font-semibold text-[#08264a] outline-none transition placeholder:text-[#9ca3af] focus:border-[#d8952f] focus:ring-4 focus:ring-[#d8952f]/25";
 
   function handleNextImage() {
     setActiveImage((current) => (current + 1) % productImages.length);
@@ -366,35 +451,143 @@ export default function ProductHeroSection() {
   }
 
   function handleNextQty() {
-    if (selectedIndex < pricingTiers.length - 1) {
-      setSelectedQty(pricingTiers[selectedIndex + 1].qty);
+    if (selectedIndex < orderableTiers.length - 1) {
+      setSelectedQty(Number(orderableTiers[selectedIndex + 1].qty));
     }
   }
 
   function handlePrevQty() {
     if (selectedIndex > 0) {
-      setSelectedQty(pricingTiers[selectedIndex - 1].qty);
+      setSelectedQty(Number(orderableTiers[selectedIndex - 1].qty));
     }
   }
+
+  function handleSelectQty(value) {
+    const quantity = Number(value);
+
+    if (allowedOrderQuantities.includes(quantity)) {
+      setSelectedQty(quantity);
+    }
+  }
+
+  function handleCustomerChange(event) {
+    const { name, value } = event.target;
+
+    setCustomerForm((current) => ({
+      ...current,
+      [name]: value,
+    }));
+  }
+
+  function handleOpenOrderModal() {
+    setOrderError("");
+    setSuccessMessage("");
+    setCreatedOrder(null);
+    setIsOrderModalOpen(true);
+  }
+
+  function handleCloseOrderModal() {
+    if (!isSubmitting) {
+      setIsOrderModalOpen(false);
+    }
+  }
+
+  useEffect(() => {
+    if (!isOrderModalOpen) {
+      return;
+    }
+
+    const scrollY = window.scrollY;
+    const previousHtmlOverflow = document.documentElement.style.overflow;
+    const previousOverflow = document.body.style.overflow;
+    const previousPosition = document.body.style.position;
+    const previousTop = document.body.style.top;
+    const previousWidth = document.body.style.width;
+
+    document.documentElement.style.overflow = "hidden";
+    document.body.style.overflow = "hidden";
+    document.body.style.position = "fixed";
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = "100%";
+
+    return () => {
+      document.documentElement.style.overflow = previousHtmlOverflow;
+      document.body.style.overflow = previousOverflow;
+      document.body.style.position = previousPosition;
+      document.body.style.top = previousTop;
+      document.body.style.width = previousWidth;
+      window.scrollTo(0, scrollY);
+    };
+  }, [isOrderModalOpen]);
 
   const requiresAdvance = selectedTier.qty > 24;
   const advanceAmount = Math.round(selectedTier.total * 0.2);
 
-  function handleWhatsAppOrder() {
-    const message = `Hello RUXBUX, I want to order StackSmart Wardrobe Organizer.
-Selected Quantity: ${selectedTier.qty}
-Total: ${formatPKR(selectedTier.total)} PKR${
-      requiresAdvance
-        ? `\n20% Advance Payment Required: ${formatPKR(advanceAmount)} PKR`
-        : ""
+  function buildWhatsAppMessage(order) {
+    const orderAddress = order.address || {};
+
+    return `Hello RUXBUX, I want to confirm my StackSmart Wardrobe Organizer order.
+Order ID: ${order.public_id || order.id}
+Selected Quantity: ${order.quantity}
+Total: ${formatPKR(order.total_amount)}
+Name: ${orderAddress.full_name || customerForm.full_name}
+Phone: ${orderAddress.phone || customerForm.phone}
+City: ${orderAddress.city || customerForm.city}`;
+  }
+
+  function handleCreatedOrderWhatsApp() {
+    if (!createdOrder) {
+      return;
     }
-Please confirm availability and delivery details.`;
 
     window.open(
-      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`,
+      `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(
+        buildWhatsAppMessage(createdOrder)
+      )}`,
       "_blank",
       "noopener,noreferrer"
     );
+  }
+
+  async function handleOrderSubmit(event) {
+    event.preventDefault();
+
+    const quantity = Number(selectedTier.qty);
+
+    if (!allowedOrderQuantities.includes(quantity)) {
+      setOrderError("Please select a valid quantity: 6, 12, 18, 24, 30, 36, 42, or 48.");
+      return;
+    }
+
+    const payload = {
+      quantity,
+      email: customerForm.email.trim(),
+      full_name: customerForm.full_name.trim(),
+      phone: customerForm.phone.trim(),
+      address: customerForm.address.trim(),
+      city: customerForm.city.trim(),
+    };
+
+    setIsSubmitting(true);
+    setOrderError("");
+    setSuccessMessage("");
+    setCreatedOrder(null);
+
+    try {
+      const order = await createOrder(payload);
+
+      console.log("Created order response:", order);
+
+      setCreatedOrder(order);
+      setSuccessMessage(
+        `Order created successfully. Reference: ${order.public_id || order.id}.`
+      );
+      router.push(`/order-success/${order.public_id}`);
+    } catch (error) {
+      setOrderError(formatOrderError(error));
+    } finally {
+      setIsSubmitting(false);
+    }
   }
 
   const hasDiscount = selectedTier.discountAmount > 0;
@@ -508,101 +701,303 @@ Please confirm availability and delivery details.`;
                 key={tier.qty}
                 tier={tier}
                 selected={selectedTier.qty === tier.qty}
-                onSelect={setSelectedQty}
+                onSelect={handleSelectQty}
               />
             ))}
           </div>
 
-          <div className="mt-6 rounded-2xl border border-[#eee3cf] bg-white px-4 py-3 shadow-[0_16px_38px_rgba(8,38,74,0.06)] sm:px-5 sm:py-3.5 lg:px-6 lg:py-3.5">
-            <div className="grid gap-5 lg:grid-cols-[1.05fr_1.1fr_0.95fr_0.95fr] lg:gap-0">
-              <div className="text-center lg:border-r lg:border-[#eee3cf] lg:pr-6 lg:text-left">
-                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
-                  Selected Quantity
-                </p>
-                <div className="mx-auto mt-3 grid max-w-[218px] grid-cols-[1fr_1.35fr_1fr] overflow-hidden rounded-xl border border-[#eee3cf] bg-white shadow-sm lg:mx-0">
-                  <button
-                    type="button"
-                    onClick={handlePrevQty}
-                    disabled={selectedIndex === 0}
-                    aria-label="Select previous quantity tier"
-                    className="flex h-10 items-center justify-center text-[#08264a] transition hover:bg-[#f3f6f9] disabled:cursor-not-allowed disabled:text-[#b4bdc9] sm:h-11"
-                  >
-                    <MinusIcon />
-                  </button>
-                  <span className="flex h-10 items-center justify-center border-x border-[#eee3cf] text-xl font-semibold text-[#08264a] sm:h-11">
-                    {selectedTier.qty}
-                  </span>
-                  <button
-                    type="button"
-                    onClick={handleNextQty}
-                    disabled={selectedIndex === pricingTiers.length - 1}
-                    aria-label="Select next quantity tier"
-                    className="flex h-10 items-center justify-center text-[#08264a] transition hover:bg-[#f3f6f9] disabled:cursor-not-allowed disabled:text-[#b4bdc9] sm:h-11"
-                  >
-                    <PlusIcon />
-                  </button>
-                </div>
-              </div>
-
-              <div className="border-t border-[#eee3cf] pt-4 text-center lg:border-r lg:border-t-0 lg:border-[#eee3cf] lg:px-6 lg:pt-0 lg:text-left">
-                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
-                  Order Summary
-                </p>
-                <p className="mt-3 text-[15px] font-medium leading-6 text-[#4b5563]">
-                  Qty {selectedTier.qty} pack
-                </p>
-                {hasDiscount || selectedTier.shipping === 0 ? (
-                  <div className="mt-2 flex flex-wrap justify-center gap-1.5 lg:justify-start">
-                    {hasDiscount ? (
-                      <span className="rounded-full bg-[#eaf7ef] px-2.5 py-1 text-[11px] font-semibold text-[#37ad4b]">
-                        Save {selectedTier.discount}
-                      </span>
-                    ) : null}
-                    {selectedTier.shipping === 0 ? (
-                      <span className="rounded-full bg-[#eaf7ef] px-2.5 py-1 text-[11px] font-semibold text-[#37ad4b]">
-                        Free Shipping
-                      </span>
-                    ) : null}
+          <div className="mt-6 space-y-4">
+            <div className="rounded-2xl border border-[#eee3cf] bg-white px-4 py-3 shadow-[0_16px_38px_rgba(8,38,74,0.06)] sm:px-5 sm:py-3.5 lg:px-6 lg:py-3.5">
+              <div className="grid gap-5 lg:grid-cols-[1.05fr_1.1fr_0.95fr_0.95fr] lg:gap-0">
+                <div className="text-center lg:border-r lg:border-[#eee3cf] lg:pr-6 lg:text-left">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                    Selected Quantity
+                  </p>
+                  <div className="mx-auto mt-3 grid max-w-[218px] grid-cols-[1fr_1.35fr_1fr] overflow-hidden rounded-xl border border-[#eee3cf] bg-white shadow-sm lg:mx-0">
+                    <button
+                      type="button"
+                      onClick={handlePrevQty}
+                      disabled={selectedIndex === 0}
+                      aria-label="Select previous quantity tier"
+                      className="flex h-10 items-center justify-center text-[#08264a] transition hover:bg-[#f3f6f9] disabled:cursor-not-allowed disabled:text-[#b4bdc9] sm:h-11"
+                    >
+                      <MinusIcon />
+                    </button>
+                    <span className="flex h-10 items-center justify-center border-x border-[#eee3cf] text-xl font-semibold text-[#08264a] sm:h-11">
+                      {selectedTier.qty}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleNextQty}
+                      disabled={selectedIndex === orderableTiers.length - 1}
+                      aria-label="Select next quantity tier"
+                      className="flex h-10 items-center justify-center text-[#08264a] transition hover:bg-[#f3f6f9] disabled:cursor-not-allowed disabled:text-[#b4bdc9] sm:h-11"
+                    >
+                      <PlusIcon />
+                    </button>
                   </div>
-                ) : null}
-              </div>
+                </div>
 
-              <div className="border-t border-[#eee3cf] pt-4 text-center lg:border-t-0 lg:px-6 lg:pt-0">
-                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
-                  Total (PKR)
-                </p>
-                {hasDiscount ? (
-                  <p className="mt-3 text-sm font-medium text-[#6b7280] line-through">
-                    {formatPKR(selectedTier.subtotal)}
+                <div className="border-t border-[#eee3cf] pt-4 text-center lg:border-r lg:border-t-0 lg:border-[#eee3cf] lg:px-6 lg:pt-0 lg:text-left">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                    Order Summary
                   </p>
-                ) : null}
-                <p className={`text-[28px] font-black leading-none text-[#08264a] ${hasDiscount ? "mt-1" : "mt-3"}`}>
-                  {formatPKR(selectedTier.total)}
-                </p>
-                <p
-                  className={`mt-2 text-[13px] font-semibold leading-5 ${hasDiscount ? "text-[#37ad4b]" : "text-[#6b7280]"}`}
+                  <p className="mt-3 text-[15px] font-medium leading-6 text-[#4b5563]">
+                    Qty {selectedTier.qty} pack
+                  </p>
+                  {hasDiscount || selectedTier.shipping === 0 ? (
+                    <div className="mt-2 flex flex-wrap justify-center gap-1.5 lg:justify-start">
+                      {hasDiscount ? (
+                        <span className="rounded-full bg-[#eaf7ef] px-2.5 py-1 text-[11px] font-semibold text-[#37ad4b]">
+                          Save {selectedTier.discount}
+                        </span>
+                      ) : null}
+                      {selectedTier.shipping === 0 ? (
+                        <span className="rounded-full bg-[#eaf7ef] px-2.5 py-1 text-[11px] font-semibold text-[#37ad4b]">
+                          Free Shipping
+                        </span>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+
+                <div className="border-t border-[#eee3cf] pt-4 text-center lg:border-t-0 lg:px-6 lg:pt-0">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                    Total (PKR)
+                  </p>
+                  {hasDiscount ? (
+                    <p className="mt-3 text-sm font-medium text-[#6b7280] line-through">
+                      {formatPKR(selectedTier.subtotal)}
+                    </p>
+                  ) : null}
+                  <p className={`text-[28px] font-black leading-none text-[#08264a] ${hasDiscount ? "mt-1" : "mt-3"}`}>
+                    {formatPKR(selectedTier.total)}
+                  </p>
+                  <p
+                    className={`mt-2 text-[13px] font-semibold leading-5 ${hasDiscount ? "text-[#37ad4b]" : "text-[#6b7280]"}`}
+                  >
+                    {savingsLine}
+                  </p>
+                  {requiresAdvance ? (
+                    <p className="mt-2 rounded-lg bg-[#fff4df] px-2.5 py-1.5 text-[11px] font-semibold leading-5 text-[#9a5b08]">
+                      20% advance ({formatPKR(advanceAmount)}) required
+                    </p>
+                  ) : null}
+                </div>
+
+                <button
+                  type="button"
+                  onClick={handleOpenOrderModal}
+                  className="inline-flex min-h-11 w-full items-center justify-center gap-2.5 rounded-xl bg-[#08264a] px-5 text-[15px] font-semibold text-white shadow-[0_14px_28px_rgba(8,38,74,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0b315e] sm:max-w-[230px] lg:ml-auto lg:min-h-12 lg:max-w-none lg:self-center"
                 >
-                  {savingsLine}
-                </p>
-                {requiresAdvance ? (
-                  <p className="mt-2 rounded-lg bg-[#fff4df] px-2.5 py-1.5 text-[11px] font-semibold leading-5 text-[#9a5b08]">
-                    20% advance ({formatPKR(advanceAmount)}) required
-                  </p>
-                ) : null}
+                  <BagIcon />
+                  BUY NOW
+                </button>
               </div>
-
-              <button
-                type="button"
-                onClick={handleWhatsAppOrder}
-                className="inline-flex min-h-11 w-full items-center justify-center gap-2.5 rounded-xl bg-[#08264a] px-5 text-[15px] font-semibold text-white shadow-[0_14px_28px_rgba(8,38,74,0.22)] transition hover:-translate-y-0.5 hover:bg-[#0b315e] sm:max-w-[230px] lg:ml-auto lg:min-h-12 lg:max-w-none lg:self-center"
-              >
-                <BagIcon />
-                BUY NOW
-              </button>
             </div>
           </div>
         </div>
       </div>
+
+      {isOrderModalOpen ? (
+        <div className="fixed inset-0 z-[2000] overflow-y-auto overscroll-contain bg-[#08264a]/55 px-4 py-5 backdrop-blur-sm sm:py-8">
+          <div className="mx-auto flex min-h-full w-full max-w-2xl items-center justify-center">
+            <form
+              onSubmit={handleOrderSubmit}
+              className="w-full rounded-2xl border border-[#eee3cf] bg-white p-4 shadow-[0_24px_80px_rgba(8,38,74,0.28)] sm:p-5"
+            >
+              <div className="flex items-start justify-between gap-4 border-b border-[#eee3cf] pb-4">
+                <div>
+                  <h2 className="text-xl font-black leading-tight text-[#08264a]">
+                    Complete Your Order
+                  </h2>
+                  <p className="mt-1 text-sm font-semibold leading-6 text-[#6b7280]">
+                    Enter your delivery details for StackSmart Organizer.
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  onClick={handleCloseOrderModal}
+                  disabled={isSubmitting}
+                  aria-label="Close order form"
+                  className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#eee3cf] text-[#08264a] transition hover:border-[#d8952f] hover:bg-[#fff4df] hover:text-[#9a5b08] disabled:cursor-not-allowed disabled:opacity-60"
+                >
+                  <CloseIcon />
+                </button>
+              </div>
+
+              <div className="grid gap-4 sm:grid-cols-2">
+                <label className="block text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                  Full Name
+                  <input
+                    type="text"
+                    name="full_name"
+                    value={customerForm.full_name}
+                    onChange={handleCustomerChange}
+                    required
+                    autoComplete="name"
+                    placeholder="Ali Khan"
+                    className={inputClass}
+                  />
+                </label>
+
+                <label className="block text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                  Email
+                  <input
+                    type="email"
+                    name="email"
+                    value={customerForm.email}
+                    onChange={handleCustomerChange}
+                    required
+                    autoComplete="email"
+                    placeholder="customer@example.com"
+                    className={inputClass}
+                  />
+                </label>
+
+                <label className="block text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                  Phone
+                  <input
+                    type="tel"
+                    name="phone"
+                    value={customerForm.phone}
+                    onChange={handleCustomerChange}
+                    required
+                    autoComplete="tel"
+                    placeholder="03001234567"
+                    className={inputClass}
+                  />
+                </label>
+
+                <label className="block text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                  City
+                  <input
+                    type="text"
+                    name="city"
+                    value={customerForm.city}
+                    onChange={handleCustomerChange}
+                    required
+                    autoComplete="address-level2"
+                    placeholder="Lahore"
+                    className={inputClass}
+                  />
+                </label>
+
+                <label className="block text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a] sm:col-span-2">
+                  Address
+                  <textarea
+                    name="address"
+                    value={customerForm.address}
+                    onChange={handleCustomerChange}
+                    required
+                    rows={3}
+                    autoComplete="street-address"
+                    placeholder="House 12, Street 5, Lahore"
+                    className={`${inputClass} h-auto min-h-24 resize-y py-3 leading-6`}
+                  />
+                </label>
+              </div>
+
+              {successMessage ? (
+                <div className="mt-4 rounded-xl border border-[#bfe7cb] bg-[#effaf2] px-4 py-3 text-sm font-semibold leading-6 text-[#287a38]">
+                  {successMessage}
+                </div>
+              ) : null}
+
+              {orderError ? (
+                <div className="mt-4 rounded-xl border border-[#f3c4bd] bg-[#fff3f1] px-4 py-3 text-sm font-semibold leading-6 text-[#b42318]">
+                  {orderError}
+                </div>
+              ) : null}
+
+              <div className="mt-4 flex flex-col gap-3 lg:flex-row lg:items-stretch">
+                <div className="flex flex-1 flex-col gap-3 rounded-xl border border-[#eee3cf] bg-white px-4 py-3 sm:flex-row sm:items-center sm:justify-between">
+                  <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                    Change Quantity
+                  </p>
+                  <div className="grid w-full max-w-[176px] grid-cols-[0.9fr_1.2fr_0.9fr] overflow-hidden rounded-xl border border-[#eee3cf] bg-white shadow-sm">
+                    <button
+                      type="button"
+                      onClick={handlePrevQty}
+                      disabled={selectedIndex === 0}
+                      aria-label="Select previous quantity tier"
+                      className="flex h-10 items-center justify-center text-[#08264a] transition hover:bg-[#f3f6f9] disabled:cursor-not-allowed disabled:text-[#b4bdc9]"
+                    >
+                      <MinusIcon />
+                    </button>
+                    <span className="flex h-10 items-center justify-center border-x border-[#eee3cf] text-lg font-semibold text-[#08264a]">
+                      {selectedTier.qty}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={handleNextQty}
+                      disabled={selectedIndex === orderableTiers.length - 1}
+                      aria-label="Select next quantity tier"
+                      className="flex h-10 items-center justify-center text-[#08264a] transition hover:bg-[#f3f6f9] disabled:cursor-not-allowed disabled:text-[#b4bdc9]"
+                    >
+                      <PlusIcon />
+                    </button>
+                  </div>
+                </div>
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-[#08264a] px-5 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(8,38,74,0.20)] transition hover:-translate-y-0.5 hover:bg-[#0b315e] disabled:cursor-not-allowed disabled:opacity-65 sm:w-[190px] lg:self-center"
+                >
+                  <BagIcon />
+                  {isSubmitting ? "Placing Order..." : "BUY NOW"}
+                </button>
+              </div>
+
+              <div className="mt-4 rounded-xl border border-[#eee3cf] bg-[#fffaf1] p-4">
+                <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
+                  Short Order Summary
+                </p>
+                <div className="mt-3 grid gap-2 text-sm font-semibold text-[#4b5563] sm:grid-cols-2">
+                  <div className="flex items-center justify-between gap-3">
+                    <span>Quantity</span>
+                    <span className="text-[#08264a]">{selectedTier.qty}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span>Total</span>
+                    <span className="text-[#08264a]">{formatPKR(selectedTier.total)}</span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span>Shipping</span>
+                    <span className="text-[#08264a]">
+                      {selectedTier.shipping === 0 ? "Free" : formatPKR(selectedTier.shipping)}
+                    </span>
+                  </div>
+                  <div className="flex items-center justify-between gap-3">
+                    <span>Discount</span>
+                    <span className="text-[#37ad4b]">
+                      {hasDiscount ? selectedTier.discount : "No discount"}
+                    </span>
+                  </div>
+                </div>
+                {requiresAdvance ? (
+                  <div className="mt-3 rounded-lg bg-[#fff4df] px-3 py-2 text-sm font-semibold leading-5 text-[#9a5b08]">
+                    20% advance ({formatPKR(advanceAmount)}) required for 30+ quantity orders.
+                  </div>
+                ) : null}
+              </div>
+
+              <div className="mt-4 flex flex-col gap-3 sm:flex-row sm:items-center">
+                {createdOrder ? (
+                  <button
+                    type="button"
+                    onClick={handleCreatedOrderWhatsApp}
+                    className="inline-flex min-h-11 w-full items-center justify-center rounded-xl border border-[#d8952f] bg-white px-5 text-[15px] font-semibold text-[#9a5b08] transition hover:-translate-y-0.5 hover:bg-[#fff4df] sm:max-w-[230px] lg:min-h-12"
+                  >
+                    Continue on WhatsApp
+                  </button>
+                ) : null}
+              </div>
+            </form>
+          </div>
+        </div>
+      ) : null}
     </section>
   );
 }

@@ -15,10 +15,11 @@
 }
 
 .announcement-content {
-  height: 24px;
+  min-height: 24px;
   display: flex;
   align-items: center;
   justify-content: center;
+  gap: 18px;
   overflow: hidden;
 }
 
@@ -29,6 +30,31 @@
   letter-spacing: 0.3px;
   line-height: 1.5;
   animation: slideAnnouncement 0.5s ease;
+}
+
+.announcement-contact {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1.4;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+.announcement-contact::before {
+  content: "";
+  display: inline-block;
+  width: 1px;
+  height: 18px;
+  margin-right: 18px;
+  background: rgba(255, 255, 255, 0.42);
+}
+
+.announcement-contact:hover {
+  color: #f5b83b;
 }
 
 .announcement-badge {
@@ -61,11 +87,23 @@
   }
 
   .announcement-content {
-    height: 38px;
+    min-height: 42px;
+    flex-direction: column;
+    gap: 2px;
   }
 
   .announcement-text {
-    font-size: 16px;
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  .announcement-contact {
+    font-size: 13px;
+    line-height: 1.25;
+  }
+
+  .announcement-contact::before {
+    display: none;
   }
 
   .announcement-badge {
