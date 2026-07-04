@@ -30,8 +30,8 @@ export default function RootLayout({ children }) {
       // className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body>
-        <div className="sticky top-0 z-50">
-          <AnnouncementBar />
+        <AnnouncementBar />
+        <div className="sticky top-0 z-[1000]">
           <Navbar />
         </div>
         {children}
