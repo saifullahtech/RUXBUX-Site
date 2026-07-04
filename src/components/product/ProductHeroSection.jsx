@@ -954,14 +954,10 @@ City: ${orderAddress.city || customerForm.city}`;
                 <p className="text-xs font-semibold uppercase tracking-[0.08em] text-[#08264a]">
                   Short Order Summary
                 </p>
-                <div className="mt-3 grid gap-2 text-sm font-semibold text-[#4b5563] sm:grid-cols-2">
+                <div className="mt-3 grid gap-2 text-sm font-semibold text-[#4b5563] sm:grid-cols-3">
                   <div className="flex items-center justify-between gap-3">
                     <span>Quantity</span>
                     <span className="text-[#08264a]">{selectedTier.qty}</span>
-                  </div>
-                  <div className="flex items-center justify-between gap-3">
-                    <span>Total</span>
-                    <span className="text-[#08264a]">{formatPKR(selectedTier.total)}</span>
                   </div>
                   <div className="flex items-center justify-between gap-3">
                     <span>Shipping</span>
@@ -975,6 +971,10 @@ City: ${orderAddress.city || customerForm.city}`;
                       {hasDiscount ? selectedTier.discount : "No discount"}
                     </span>
                   </div>
+                </div>
+                <div className="mt-3 flex items-center justify-between gap-3 border-t border-[#eee3cf] pt-3 text-sm font-black text-[#08264a]">
+                  <span>Total Amount</span>
+                  <span>{formatPKR(selectedTier.total)}</span>
                 </div>
                 {requiresAdvance ? (
                   <div className="mt-3 rounded-lg bg-[#fff4df] px-3 py-2 text-sm font-semibold leading-5 text-[#9a5b08]">

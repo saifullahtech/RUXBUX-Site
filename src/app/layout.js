@@ -5,6 +5,7 @@ import "./globals.css";
 
 
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
+import FloatingWhatsAppButton from "@/components/layout/FloatingWhatsAppButton";
 import Footer from "@/components/layout/Footer";
 import Navbar from "@/components/layout/Navbar";
 
@@ -35,6 +36,7 @@ export default function RootLayout({ children }) {
           <Navbar />
         </div>
         {children}
+        <FloatingWhatsAppButton />
         <Footer />
       </body>
     </html>

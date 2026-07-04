@@ -18,7 +18,7 @@ function formatDate(value) {
 }
 
 function getStatusLabel(status) {
-  return String(status || "pending")
+  return String(status || "confirmed")
     .split("_")
     .map((part) => part.charAt(0).toUpperCase() + part.slice(1))
     .join(" ");

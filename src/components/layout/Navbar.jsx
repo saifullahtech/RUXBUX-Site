@@ -13,6 +13,8 @@ const NAV_LINKS = [
   { label: "Contact", href: "/contact" },
 ];
 
+const WHATSAPP_HREF = "https://wa.me/923020441525";
+
 function WhatsAppIcon() {
   return (
     <svg
@@ -142,7 +144,9 @@ export default function Navbar() {
 
         <div className="hidden items-center gap-4 lg:flex">
           <Link
-            href="/contact"
+            href={WHATSAPP_HREF}
+            target="_blank"
+            rel="noreferrer"
             className="inline-flex h-12 items-center justify-center gap-3 rounded-md border border-[#092246] bg-transparent px-5 text-sm font-bold text-[#081d3d] transition hover:border-[#d98200] hover:bg-white hover:text-[#d98200]"
           >
             <WhatsAppIcon />
@@ -205,7 +209,9 @@ export default function Navbar() {
           })}
 
           <Link
-            href="/contact"
+            href={WHATSAPP_HREF}
+            target="_blank"
+            rel="noreferrer"
             onClick={closeMenu}
             tabIndex={isMenuOpen ? 0 : -1}
             className="mt-2 inline-flex items-center justify-center gap-3 rounded-md border border-[#092246] px-5 py-3 text-center text-sm font-bold text-[#081d3d] transition hover:border-[#d98200] hover:bg-white hover:text-[#d98200]"

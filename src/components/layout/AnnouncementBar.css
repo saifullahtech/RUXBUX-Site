@@ -32,31 +32,6 @@
   animation: slideAnnouncement 0.5s ease;
 }
 
-.announcement-contact {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  color: #ffffff;
-  font-size: 15px;
-  font-weight: 800;
-  line-height: 1.4;
-  text-decoration: none;
-  white-space: nowrap;
-}
-
-.announcement-contact::before {
-  content: "";
-  display: inline-block;
-  width: 1px;
-  height: 18px;
-  margin-right: 18px;
-  background: rgba(255, 255, 255, 0.42);
-}
-
-.announcement-contact:hover {
-  color: #f5b83b;
-}
-
 .announcement-badge {
   display: inline-block;
   margin-right: 10px;
@@ -95,15 +70,6 @@
   .announcement-text {
     font-size: 13px;
     line-height: 1.25;
-  }
-
-  .announcement-contact {
-    font-size: 13px;
-    line-height: 1.25;
-  }
-
-  .announcement-contact::before {
-    display: none;
   }
 
   .announcement-badge {
