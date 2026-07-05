@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { useMemo, useState } from "react";
+import { createReview } from "@/lib/api/reviews";
 import EmptyReviewsState from "./EmptyReviewsState";
 import RatingBreakdown from "./RatingBreakdown";
 import ReviewCard from "./ReviewCard";
@@ -80,6 +81,34 @@ function getReviewStats(reviews) {
   return { averageRating, totalReviews, ratingCounts, ratingPercentages };
 }
 
+function mergeReviewStats(currentStats, review) {
+  const rating = Number(review?.rating);
+
+  if (!rating || rating < 1 || rating > 5) {
+    return currentStats;
+  }
+
+  const totalReviews = (Number(currentStats?.totalReviews) || 0) + 1;
+  const currentAverage = Number(currentStats?.averageRating) || 0;
+  const previousTotal = Number(currentStats?.totalReviews) || 0;
+  const averageRating = (currentAverage * previousTotal + rating) / totalReviews;
+  const ratingCounts = {
+    1: Number(currentStats?.ratingCounts?.[1]) || 0,
+    2: Number(currentStats?.ratingCounts?.[2]) || 0,
+    3: Number(currentStats?.ratingCounts?.[3]) || 0,
+    4: Number(currentStats?.ratingCounts?.[4]) || 0,
+    5: Number(currentStats?.ratingCounts?.[5]) || 0,
+  };
+  ratingCounts[rating] += 1;
+  const ratingPercentages = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+
+  Object.keys(ratingCounts).forEach((ratingKey) => {
+    ratingPercentages[ratingKey] = Math.round((ratingCounts[ratingKey] / totalReviews) * 100);
+  });
+
+  return { averageRating, totalReviews, ratingCounts, ratingPercentages };
+}
+
 function getTimeValue(date) {
   const parsedDate = new Date(date);
   return Number.isNaN(parsedDate.getTime()) ? 0 : parsedDate.getTime();
@@ -94,18 +123,35 @@ export default function ReviewsSection({
   showTrustBadges = true,
   maxVisibleReviews = 3,
   onSubmitReview,
+  summary,
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ratingFilter, setRatingFilter] = useState("all");
   const [sortBy, setSortBy] = useState("newest");
   const [perPage, setPerPage] = useState(maxVisibleReviews || 6);
   const [currentPage, setCurrentPage] = useState(1);
+  const [submittedReviews, setSubmittedReviews] = useState([]);
 
-  const normalizedReviews = useMemo(() => normalizeReviews(reviews), [reviews]);
-  const { averageRating, totalReviews, ratingCounts, ratingPercentages } = useMemo(
+  const normalizedReviews = useMemo(
+    () => normalizeReviews([...submittedReviews, ...reviews]),
+    [submittedReviews, reviews]
+  );
+  const fallbackStats = useMemo(
     () => getReviewStats(normalizedReviews),
     [normalizedReviews]
   );
+  const summaryStats = useMemo(() => {
+    if (!summary) {
+      return null;
+    }
+
+    return submittedReviews.reduce(
+      (currentStats, review) => mergeReviewStats(currentStats, review),
+      summary
+    );
+  }, [submittedReviews, summary]);
+  const { averageRating, totalReviews, ratingCounts, ratingPercentages } =
+    summaryStats || fallbackStats;
 
   const filteredReviews = useMemo(() => {
     const filtered = normalizedReviews.filter((review) => {
@@ -145,12 +191,20 @@ export default function ReviewsSection({
 
   async function handleSubmitReview(reviewPayload) {
     if (onSubmitReview) {
-      await onSubmitReview(reviewPayload);
+      const submittedReview = await onSubmitReview(reviewPayload);
+
+      if (submittedReview) {
+        setSubmittedReviews((currentReviews) => [submittedReview, ...currentReviews]);
+      }
+
       return;
     }
 
-    // TODO: Send reviewPayload to the Django REST Framework reviews endpoint.
-    await new Promise((resolve) => window.setTimeout(resolve, 450));
+    const submittedReview = await createReview(reviewPayload);
+
+    if (submittedReview) {
+      setSubmittedReviews((currentReviews) => [submittedReview, ...currentReviews]);
+    }
   }
 
   return (

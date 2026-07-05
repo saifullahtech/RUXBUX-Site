@@ -8,6 +8,14 @@ const nextConfig = {
         protocol: "https",
         hostname: "i.pravatar.cc",
       },
+      {
+        protocol: "https",
+        hostname: "ruxbux.com",
+      },
+      {
+        protocol: "https",
+        hostname: "www.ruxbux.com",
+      },
     ],
   },
 

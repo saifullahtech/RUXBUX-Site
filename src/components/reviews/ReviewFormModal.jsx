@@ -46,16 +46,18 @@ export default function ReviewFormModal({
   const [hoverRating, setHoverRating] = useState(0);
   const [formData, setFormData] = useState({
     name: "",
-    contact: "",
+    email: "",
     title: "",
     comment: "",
-    image: "",
+    images: [],
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
 
   const closeModal = useCallback(() => {
     setSuccessMessage("");
+    setErrorMessage("");
     onClose();
   }, [onClose]);
 
@@ -95,21 +97,22 @@ export default function ReviewFormModal({
   async function handleSubmit(event) {
     event.preventDefault();
 
-    if (!rating || !formData.name.trim() || !formData.comment.trim()) {
+    if (!rating || !formData.name.trim() || !formData.email.trim() || !formData.comment.trim()) {
       return;
     }
 
     setIsSubmitting(true);
+    setErrorMessage("");
 
     const reviewPayload = {
       productId,
       productName,
       rating,
       name: formData.name.trim(),
-      contact: formData.contact.trim(),
+      email: formData.email.trim(),
       title: formData.title.trim(),
       comment: formData.comment.trim(),
-      image: formData.image,
+      images: formData.images,
       date: new Date().toISOString(),
       verified: false,
     };
@@ -117,11 +120,19 @@ export default function ReviewFormModal({
     try {
       await onSubmitReview(reviewPayload);
       setSuccessMessage(
-        "Thank you! Your review has been submitted and will appear after verification."
+        "Thank you! Your review is now live."
       );
       setRating(0);
       setHoverRating(0);
-      setFormData({ name: "", contact: "", title: "", comment: "", image: "" });
+      setFormData({ name: "", email: "", title: "", comment: "", images: [] });
+    } catch (error) {
+      const apiMessage =
+        error?.email?.[0] ||
+        error?.text?.[0] ||
+        error?.stars?.[0] ||
+        error?.detail ||
+        "Unable to submit your review right now. Please try again.";
+      setErrorMessage(apiMessage);
     } finally {
       setIsSubmitting(false);
     }
@@ -220,10 +231,12 @@ export default function ReviewFormModal({
               </label>
 
               <label className={labelClass}>
-                Email or phone <span className="text-[#9ca3af]">(optional)</span>
+                Email <span className="text-[#d8952f]">*</span>
                 <input
-                  value={formData.contact}
-                  onChange={(event) => updateField("contact", event.target.value)}
+                  required
+                  type="email"
+                  value={formData.email}
+                  onChange={(event) => updateField("email", event.target.value)}
                   className={inputClass}
                   placeholder="For verification only"
                 />
@@ -256,15 +269,22 @@ export default function ReviewFormModal({
               <input
                 type="file"
                 accept="image/*"
+                multiple
                 onChange={(event) =>
-                  updateField("image", event.target.files?.[0]?.name || "")
+                  updateField("images", Array.from(event.target.files || []))
                 }
                 className="mt-2 block w-full rounded-xl border border-dashed border-[#e3dfd8] bg-[#fffaf1] px-4 py-4 text-sm font-semibold text-[#4b5563] file:mr-4 file:rounded-lg file:border-0 file:bg-[#08264a] file:px-4 file:py-2 file:text-sm file:font-extrabold file:text-white hover:file:bg-[#0b315e]"
               />
             </label>
 
+            {errorMessage && (
+              <div className="rounded-2xl border border-red-200 bg-red-50 p-4 text-sm font-bold leading-6 text-red-700">
+                {errorMessage}
+              </div>
+            )}
+
             <div className="rounded-2xl bg-[#fffaf1] p-4 text-sm font-semibold leading-6 text-[#4b5563]">
-              Your review will be published after verification.
+              Your review will be published as soon as it is submitted.
             </div>
 
             <button

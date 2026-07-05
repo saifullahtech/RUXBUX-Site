@@ -54,7 +54,7 @@ export default function ReviewCard({ review }) {
 
         {review.verified && (
           <span className="shrink-0 rounded-full bg-[#fff4df] px-3 py-1 text-xs font-bold text-[#9a5b08]">
-            Verified
+            Published
           </span>
         )}
       </div>

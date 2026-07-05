@@ -46,7 +46,7 @@ export default function ReviewSummary({
               ))}
             </div>
             <p className="mt-3 text-sm font-semibold text-[#4b5563]">
-              Based on {totalReviews} verified {totalReviews === 1 ? "review" : "reviews"}
+              Based on {totalReviews} customer {totalReviews === 1 ? "review" : "reviews"}
             </p>
           </>
         ) : (

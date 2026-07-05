@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { createOrder } from "@/lib/api/orders";
 
 const productImages = [
@@ -148,13 +148,12 @@ const benefits = [
   },
 ];
 
-const productRating = {
-  score: "4.9",
-  reviews: "1,248",
-};
-
 function formatPKR(value) {
   return `Rs.${Number(value).toLocaleString("en-PK")}`;
+}
+
+function formatReviewCount(value) {
+  return Number(value).toLocaleString("en-PK");
 }
 
 function formatOrderError(error) {
@@ -289,9 +288,16 @@ function CloseIcon() {
   );
 }
 
-function StarIcon() {
+function StarIcon({ filled = true }) {
   return (
-    <svg aria-hidden="true" className="h-4 w-4" viewBox="0 0 24 24" fill="currentColor">
+    <svg
+      aria-hidden="true"
+      className="h-4 w-4"
+      viewBox="0 0 24 24"
+      fill={filled ? "currentColor" : "none"}
+      stroke="currentColor"
+      strokeWidth={filled ? "0" : "1.8"}
+    >
       <path d="m12 2.8 2.83 5.74 6.34.92-4.59 4.47 1.08 6.31L12 17.27l-5.66 2.97 1.08-6.31-4.59-4.47 6.34-.92L12 2.8Z" />
     </svg>
   );
@@ -413,8 +419,9 @@ function BundleCard({ tier, selected, onSelect }) {
   );
 }
 
-export default function ProductHeroSection() {
+export default function ProductHeroSection({ reviewSummary }) {
   const router = useRouter();
+  const redirectTimeoutRef = useRef(null);
   const [activeImage, setActiveImage] = useState(0);
   const [selectedQty, setSelectedQty] = useState(12);
   const [customerForm, setCustomerForm] = useState({
@@ -429,6 +436,7 @@ export default function ProductHeroSection() {
   const [successMessage, setSuccessMessage] = useState("");
   const [createdOrder, setCreatedOrder] = useState(null);
   const [isOrderModalOpen, setIsOrderModalOpen] = useState(false);
+  const [isRedirecting, setIsRedirecting] = useState(false);
 
   const orderableTiers = pricingTiers.filter((tier) =>
     allowedOrderQuantities.includes(tier.qty)
@@ -483,14 +491,23 @@ export default function ProductHeroSection() {
     setOrderError("");
     setSuccessMessage("");
     setCreatedOrder(null);
+    setIsRedirecting(false);
     setIsOrderModalOpen(true);
   }
 
   function handleCloseOrderModal() {
-    if (!isSubmitting) {
+    if (!isSubmitting && !isRedirecting) {
       setIsOrderModalOpen(false);
     }
   }
+
+  useEffect(() => {
+    return () => {
+      if (redirectTimeoutRef.current) {
+        window.clearTimeout(redirectTimeoutRef.current);
+      }
+    };
+  }, []);
 
   useEffect(() => {
     if (!isOrderModalOpen) {
@@ -572,6 +589,7 @@ City: ${orderAddress.city || customerForm.city}`;
     setOrderError("");
     setSuccessMessage("");
     setCreatedOrder(null);
+    setIsRedirecting(false);
 
     try {
       const order = await createOrder(payload);
@@ -580,11 +598,15 @@ City: ${orderAddress.city || customerForm.city}`;
 
       setCreatedOrder(order);
       setSuccessMessage(
-        `Order created successfully. Reference: ${order.public_id || order.id}.`
+        `Order created successfully. Processing your confirmation page...`
       );
-      router.push(`/order-success/${order.public_id}`);
+      setIsRedirecting(true);
+      redirectTimeoutRef.current = window.setTimeout(() => {
+        router.push(`/order-success/${order.public_id}`);
+      }, 1200);
     } catch (error) {
       setOrderError(formatOrderError(error));
+      setIsRedirecting(false);
     } finally {
       setIsSubmitting(false);
     }
@@ -594,6 +616,10 @@ City: ${orderAddress.city || customerForm.city}`;
   const savingsLine = hasDiscount
     ? `You save ${formatPKR(selectedTier.discountAmount)}`
     : "Standard pricing";
+  const reviewCount = Number(reviewSummary?.totalReviews) || 0;
+  const averageRating = Number(reviewSummary?.averageRating) || 0;
+  const roundedRating = Math.round(averageRating);
+  const hasReviews = reviewCount > 0;
 
   return (
     <section className="bg-white px-4 pb-8 pt-4 sm:px-6 lg:px-8 lg:pb-12 lg:pt-5">
@@ -658,19 +684,27 @@ City: ${orderAddress.city || customerForm.city}`;
               <span className="text-[#08264a]">StackSmart</span>{" "}
               <span className="text-[#d8952f]">Wardrobe Organizer</span>
             </h1>
-            <div
-              className="mt-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-[#4b5563]"
-              aria-label={`${productRating.score} out of 5 rating based on ${productRating.reviews} reviews`}
-            >
-              <span className="flex items-center gap-0.5 text-[#d8952f]">
-                {Array.from({ length: 5 }).map((_, index) => (
-                  <StarIcon key={index} />
-                ))}
-              </span>
-              <span className="font-black text-[#08264a]">{productRating.score}/5</span>
-              <span className="text-[#6b7280]">|</span>
-              <span>{productRating.reviews} reviews</span>
-            </div>
+            {hasReviews ? (
+              <div
+                className="mt-2 flex flex-wrap items-center gap-2 text-sm font-semibold text-[#4b5563]"
+                aria-label={`${averageRating.toFixed(1)} out of 5 rating based on ${reviewCount} reviews`}
+              >
+                <span className="flex items-center gap-0.5 text-[#d8952f]">
+                  {Array.from({ length: 5 }).map((_, index) => (
+                    <StarIcon key={index} filled={index < roundedRating} />
+                  ))}
+                </span>
+                <span className="font-black text-[#08264a]">{averageRating.toFixed(1)}/5</span>
+                <span className="text-[#6b7280]">|</span>
+                <span>
+                  {formatReviewCount(reviewCount)} {reviewCount === 1 ? "review" : "reviews"}
+                </span>
+              </div>
+            ) : (
+              <p className="mt-2 text-sm font-semibold text-[#4b5563]">
+                Customer reviews coming soon
+              </p>
+            )}
           </div>
 
           <ul className="mt-3 grid gap-2.5">
@@ -818,7 +852,7 @@ City: ${orderAddress.city || customerForm.city}`;
                 <button
                   type="button"
                   onClick={handleCloseOrderModal}
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isRedirecting}
                   aria-label="Close order form"
                   className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl border border-[#eee3cf] text-[#08264a] transition hover:border-[#d8952f] hover:bg-[#fff4df] hover:text-[#9a5b08] disabled:cursor-not-allowed disabled:opacity-60"
                 >
@@ -942,11 +976,11 @@ City: ${orderAddress.city || customerForm.city}`;
 
                 <button
                   type="submit"
-                  disabled={isSubmitting}
+                  disabled={isSubmitting || isRedirecting}
                   className="inline-flex h-12 w-full items-center justify-center gap-2.5 rounded-xl bg-[#08264a] px-5 text-sm font-semibold text-white shadow-[0_12px_24px_rgba(8,38,74,0.20)] transition hover:-translate-y-0.5 hover:bg-[#0b315e] disabled:cursor-not-allowed disabled:opacity-65 sm:w-[190px] lg:self-center"
                 >
                   <BagIcon />
-                  {isSubmitting ? "Placing Order..." : "BUY NOW"}
+                  {isRedirecting ? "Processing..." : isSubmitting ? "Placing Order..." : "BUY NOW"}
                 </button>
               </div>
 

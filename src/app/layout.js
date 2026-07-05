@@ -7,6 +7,7 @@ import "./globals.css";
 import AnnouncementBar from "@/components/layout/AnnouncementBar";
 import FloatingWhatsAppButton from "@/components/layout/FloatingWhatsAppButton";
 import Footer from "@/components/layout/Footer";
+import MetaPixel from "@/components/layout/MetaPixel";
 import Navbar from "@/components/layout/Navbar";
 
 // const geistSans = Geist({
@@ -31,6 +32,7 @@ export default function RootLayout({ children }) {
       // className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
     >
       <body>
+        <MetaPixel />
         <AnnouncementBar />
         <div className="sticky top-0 z-[1000]">
           <Navbar />
