@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { createOrder } from "@/lib/api/orders";
+import { purchase } from "@/lib/metaPixel";
 
 const productImages = [
   {
@@ -132,6 +133,7 @@ const pricingTiers = [
 const featuredQuantities = [6, 12, 18, 24];
 const allowedOrderQuantities = [6, 12, 18, 24, 30, 36, 42, 48];
 const whatsappNumber = "923000000000";
+const productContentId = "stacksmart-wardrobe-organizer";
 
 const benefits = [
   {
@@ -420,8 +422,10 @@ function BundleCard({ tier, selected, onSelect }) {
 }
 
 export default function ProductHeroSection({ reviewSummary }) {
+  // Meta Pixel ViewContent belongs in a mount effect here for this product page.
   const router = useRouter();
   const redirectTimeoutRef = useRef(null);
+  const trackedPurchaseIdsRef = useRef(new Set());
   const [activeImage, setActiveImage] = useState(0);
   const [selectedQty, setSelectedQty] = useState(12);
   const [customerForm, setCustomerForm] = useState({
@@ -474,6 +478,7 @@ export default function ProductHeroSection({ reviewSummary }) {
     const quantity = Number(value);
 
     if (allowedOrderQuantities.includes(quantity)) {
+      // Meta Pixel AddToCart can be fired here if quantity selection represents cart intent.
       setSelectedQty(quantity);
     }
   }
@@ -488,6 +493,7 @@ export default function ProductHeroSection({ reviewSummary }) {
   }
 
   function handleOpenOrderModal() {
+    // Meta Pixel InitiateCheckout belongs here when the checkout form opens.
     setOrderError("");
     setSuccessMessage("");
     setCreatedOrder(null);
@@ -595,6 +601,20 @@ City: ${orderAddress.city || customerForm.city}`;
       const order = await createOrder(payload);
 
       console.log("Created order response:", order);
+
+      const orderId = order.public_id || order.id;
+
+      if (orderId && !trackedPurchaseIdsRef.current.has(String(orderId))) {
+        trackedPurchaseIdsRef.current.add(String(orderId));
+        purchase({
+          content_name: "StackSmart Wardrobe Organizer",
+          content_type: "product",
+          content_ids: [productContentId],
+          currency: "PKR",
+          value: Number(order.total_amount || selectedTier.total || 0),
+          num_items: Number(order.quantity || quantity),
+        });
+      }
 
       setCreatedOrder(order);
       setSuccessMessage(
