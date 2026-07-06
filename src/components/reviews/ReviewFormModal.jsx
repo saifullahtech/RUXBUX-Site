@@ -113,7 +113,6 @@ export default function ReviewFormModal({
       title: formData.title.trim(),
       comment: formData.comment.trim(),
       images: formData.images,
-      date: new Date().toISOString(),
       verified: false,
     };
 

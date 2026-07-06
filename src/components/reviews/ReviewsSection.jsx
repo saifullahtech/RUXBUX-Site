@@ -109,11 +109,6 @@ function mergeReviewStats(currentStats, review) {
   return { averageRating, totalReviews, ratingCounts, ratingPercentages };
 }
 
-function getTimeValue(date) {
-  const parsedDate = new Date(date);
-  return Number.isNaN(parsedDate.getTime()) ? 0 : parsedDate.getTime();
-}
-
 export default function ReviewsSection({
   reviews = [],
   productId,
@@ -127,7 +122,7 @@ export default function ReviewsSection({
 }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [ratingFilter, setRatingFilter] = useState("all");
-  const [sortBy, setSortBy] = useState("newest");
+  const [sortBy, setSortBy] = useState("highest");
   const [perPage, setPerPage] = useState(maxVisibleReviews || 6);
   const [currentPage, setCurrentPage] = useState(1);
   const [submittedReviews, setSubmittedReviews] = useState([]);
@@ -164,14 +159,14 @@ export default function ReviewsSection({
 
     return [...filtered].sort((first, second) => {
       if (sortBy === "highest") {
-        return second.rating - first.rating || getTimeValue(second.date) - getTimeValue(first.date);
+        return second.rating - first.rating;
       }
 
       if (sortBy === "lowest") {
-        return first.rating - second.rating || getTimeValue(second.date) - getTimeValue(first.date);
+        return first.rating - second.rating;
       }
 
-      return getTimeValue(second.date) - getTimeValue(first.date);
+      return 0;
     });
   }, [normalizedReviews, ratingFilter, sortBy]);
 

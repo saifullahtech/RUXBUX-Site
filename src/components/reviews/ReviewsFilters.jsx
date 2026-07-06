@@ -40,7 +40,6 @@ export default function ReviewsFilters({
           onChange={(event) => onSortChange(event.target.value)}
           className={selectClass}
         >
-          <option value="newest">Newest first</option>
           <option value="highest">Highest rated</option>
           <option value="lowest">Lowest rated</option>
         </select>

@@ -31,7 +31,6 @@ export function mapReviewFromApi(review, productName = "StackSmart Wardrobe Orga
     rating: Number(review.stars),
     title: "",
     comment: review.text,
-    date: review.created_at,
     verified: true,
     productName,
     image: getFirstAttachmentUrl(review.attachments),

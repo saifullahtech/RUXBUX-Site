@@ -23,7 +23,7 @@ const reviews = [
     text: "The plastic feels strong and the ventilation design keeps clothes fresh.",
   },
   {
-    name: "Umer",
+    name: "Ayesha",
     avatar: "https://i.pravatar.cc/64?img=5",
     image: "/reviews/4.jpeg",
     text: "Best storage solution I have tried for folded clothes and everyday essentials.",
@@ -138,7 +138,7 @@ export default function CustomerLoveSection() {
     <section className="bg-white px-4 pb-3 pt-5 sm:px-6 sm:pb-4 sm:pt-6 lg:px-8">
       <div className="mx-auto max-w-[1080px]">
         <h2 className="text-center text-2xl font-extrabold leading-tight text-[#08264a] sm:text-3xl">
-          Loved by 1000+ Customers
+          Loved by 22000+ Customers
         </h2>
 
         <div className="relative mt-4 px-9 sm:px-10">

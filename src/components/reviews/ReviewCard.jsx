@@ -17,24 +17,6 @@ function StarIcon({ filled = true }) {
   );
 }
 
-function formatReviewDate(date) {
-  if (!date) {
-    return "Recently";
-  }
-
-  const parsedDate = new Date(date);
-
-  if (Number.isNaN(parsedDate.getTime())) {
-    return date;
-  }
-
-  return new Intl.DateTimeFormat("en", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
-  }).format(parsedDate);
-}
-
 export default function ReviewCard({ review }) {
   const rating = Math.max(1, Math.min(5, Number(review.rating) || 1));
 
@@ -77,16 +59,13 @@ export default function ReviewCard({ review }) {
         </div>
       )}
 
-      <div className="mt-5 flex flex-wrap items-center justify-between gap-3 border-t border-[#f1e7d6] pt-4">
+      <div className="mt-5 border-t border-[#f1e7d6] pt-4">
         <div>
           <p className="font-extrabold text-[#08264a]">{review.name || "RUXBUX Customer"}</p>
           {review.productName && (
             <p className="mt-0.5 text-xs font-bold text-[#6b7280]">{review.productName}</p>
           )}
         </div>
-        <time className="text-xs font-bold text-[#6b7280]" dateTime={review.date || undefined}>
-          {formatReviewDate(review.date)}
-        </time>
       </div>
     </article>
   );
