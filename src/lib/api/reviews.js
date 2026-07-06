@@ -1,5 +1,5 @@
 const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL || "https://ruxbux.com/api"
+  process.env.NEXT_PUBLIC_API_URL || "https://ruxbux.com/api"
 ).replace(/\/$/, "");
 
 function buildApiUrl(path, params = {}) {

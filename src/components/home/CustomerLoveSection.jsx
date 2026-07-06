@@ -7,37 +7,37 @@ const reviews = [
   {
     name: "Bisma",
     avatar: "https://i.pravatar.cc/64?img=32",
-    image: "/before-after/after.png",
+    image: "/reviews/1.jpeg",
     text: "Highly recommended for anyone who wants more space in a small wardrobe.",
   },
   {
     name: "Ahmad",
     avatar: "https://i.pravatar.cc/64?img=12",
-    image: "/before-after/before.png",
+    image: "/reviews/2.jpeg",
     text: "Nice product, kapray separate rakhna aur nikalna bohat easy ho gaya hai.",
   },
   {
     name: "Hira",
     avatar: "https://i.pravatar.cc/64?img=47",
-    image: "/hero/stacksmart-organizer.jpg",
+    image: "/reviews/3.jpeg",
     text: "The plastic feels strong and the ventilation design keeps clothes fresh.",
   },
   {
     name: "Umer",
     avatar: "https://i.pravatar.cc/64?img=5",
-    image: "/before-after/after.png",
+    image: "/reviews/4.jpeg",
     text: "Best storage solution I have tried for folded clothes and everyday essentials.",
   },
   {
     name: "Sana",
     avatar: "https://i.pravatar.cc/64?img=26",
-    image: "/before-after/before.png",
+    image: "/reviews/5.jpeg",
     text: "My shelves look cleaner now and everything is easier to find quickly.",
   },
   {
     name: "Danish",
     avatar: "https://i.pravatar.cc/64?img=59",
-    image: "/hero/stacksmart-organizer.jpg",
+    image: "/reviews/6.jpeg",
     text: "Simple to assemble, sturdy, and perfect for organizing office shirts.",
   },
 ];

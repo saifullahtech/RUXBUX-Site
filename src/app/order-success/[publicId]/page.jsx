@@ -25,7 +25,9 @@ function getStatusLabel(status) {
 }
 
 async function getOrder(publicId) {
-  const apiBaseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || "https://ruxbux.com/api";
+  const apiBaseUrl = (
+    process.env.NEXT_PUBLIC_API_URL || "https://ruxbux.com/api"
+  ).replace(/\/$/, "");
 
   try {
     const response = await fetch(`${apiBaseUrl}/orders/${publicId}/`, {

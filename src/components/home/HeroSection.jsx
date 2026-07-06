@@ -16,13 +16,6 @@ const trustPoints = [
   { label: "WhatsApp Support", icon: WhatsAppIcon },
 ];
 
-const avatarPhotos = [
-  "https://i.pravatar.cc/64?img=32",
-  "https://i.pravatar.cc/64?img=12",
-  "https://i.pravatar.cc/64?img=47",
-  "https://i.pravatar.cc/64?img=5",
-];
-
 const heroTypography = {
   family: '"Segoe UI", "Sogo", Arial, sans-serif',
   eyebrow: "text-[8px] font-extrabold uppercase tracking-[0.05em] lg:text-[11px] lg:tracking-[0.08em]",
@@ -30,8 +23,6 @@ const heroTypography = {
   body: "text-[13px] font-semibold leading-[1.4] lg:text-[15px] lg:leading-7",
   featureLabel: "text-[12px] font-bold leading-4",
   primaryButton: "text-xl font-bold",
-  secondaryButton: "text-lg font-bold",
-  rating: "text-sm font-extrabold",
   offerPercent: "text-[34px] font-bold leading-none",
   offerText: "text-[27px] font-bold uppercase leading-none",
   offerCaption: "text-xs font-sembold",
@@ -126,14 +117,6 @@ function ShieldCheckIcon({ className = "h-6 w-6" }) {
   );
 }
 
-function StarIcon({ className = "h-5 w-5" }) {
-  return (
-    <svg aria-hidden="true" className={className} viewBox="0 0 24 24" fill="currentColor">
-      <path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2Z" />
-    </svg>
-  );
-}
-
 export default function HeroSection() {
   return (
     <section
@@ -199,41 +182,6 @@ export default function HeroSection() {
                   </span>
                   Shop Now
                 </Link>
-                <Link
-                  href="https://wa.me/923020441525"
-                  target="_blank"
-                  rel="noreferrer"
-                  className={`inline-flex h-14 items-center justify-center gap-4 rounded-lg border border-[#08264a] bg-white/80 px-7 text-[#08264a] backdrop-blur transition hover:-translate-y-0.5 hover:border-[#d8952f] hover:text-[#d8952f] ${heroTypography.secondaryButton}`}
-                >
-                  <WhatsAppIcon className="h-7 w-7" />
-                  Order on WhatsApp
-                </Link>
-              </div>
-
-              <div className="mt-5 flex flex-wrap items-center justify-center gap-4 lg:mt-4 lg:justify-start">
-                <div className="flex -space-x-3">
-                  {avatarPhotos.map((src, index) => (
-                    <Image
-                      key={src}
-                      src={src}
-                      alt="Happy customer"
-                      width={42}
-                      height={42}
-                      className="h-10 w-10 rounded-full object-cover ring-2 ring-white"
-                      style={{ zIndex: avatarPhotos.length - index }}
-                    />
-                  ))}
-                </div>
-
-                <p className={`flex flex-wrap items-center gap-2 text-[#08264a] ${heroTypography.rating}`}>
-                  <span className="flex items-center gap-0.5 text-[#f0a51c]">
-                    {Array.from({ length: 5 }).map((_, index) => (
-                      <StarIcon key={index} />
-                    ))}
-                  </span>
-                  <span>4.9/5</span>
-                  <span className="font-bold">(22,000+ Happy Customers)</span>
-                </p>
               </div>
             </div>
 
